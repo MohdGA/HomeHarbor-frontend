@@ -7,9 +7,11 @@ import { useState } from 'react'
 
 const App = () => {
 
+  const [user, setUser] = useState(null)
+
   const handleSignUp = async (formData) => {
    const res = await authService.signUp(formData)
-   console.log(res)
+   setUser(res)
   }
 
   return (
