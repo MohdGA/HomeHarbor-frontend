@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const SignUp = (props) => {
+  const navigate = useNavigate()
 
   const initialState = {
     username: '',
@@ -14,8 +16,9 @@ const SignUp = (props) => {
   }
 
   const handleSubmit = (evt) => {
-    evt.preventDefault()
+    evt.preventDefault()  
     props.handleSignUp(formData)
+    navigate('/')
   }
 
   return (
