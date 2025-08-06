@@ -13,8 +13,16 @@ const App = () => {
   const [user, setUser] = useState(initialState)
 
   const handleSignUp = async (formData) => {
-   const res = await authService.signUp(formData)
-   setUser(res)
+    try {
+      const res = await authService.signUp(formData)
+      setUser(res)
+      // return success
+      return { success: true }
+    } catch(err){
+      // return failure flag (then signup form can display message)
+      // add message?
+      return { success: false, message: err.message }
+    }
   }
 
   const handleSignOut = () => {
