@@ -3,11 +3,13 @@ import NavBar from './components/NavBar/NavBar'
 import SignUp from './components/SignUp/SignUp'
 import { Route, Routes } from 'react-router-dom'
 import * as authService from './services/authService.js'
+import { useState } from 'react'
 
 const App = () => {
 
   const handleSignUp = async (formData) => {
-   await authService.signUp(formData)
+   const res = await authService.signUp(formData)
+   console.log(res)
   }
 
   return (
