@@ -14,9 +14,14 @@ const App = () => {
    setUser(res)
   }
 
+    const handleSignOut = () => {
+    localStorage.removeItem('token')
+    setUser(null)
+  }
+
   return (
     <>
-      <NavBar />
+      <NavBar user={user} handleSignOut={handleSignOut} />
       <Routes>
           <Route path='/' element={<h1>Hello world!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} />} />
