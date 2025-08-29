@@ -11,6 +11,7 @@ const NavBar = (props) => {
           <li>Welcome {props.user.username}</li>
           <li><Link to="/"> Home </Link></li>
           <li><Link to='/' onClick={props.handleSignOut}>Sign Out</Link></li>
+          <li><Link to="properties/new">Add list</Link></li>
         </ul>
         ) : (
           <ul>
