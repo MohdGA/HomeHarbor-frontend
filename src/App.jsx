@@ -4,7 +4,9 @@ import SignUp from './components/SignUp/SignUp'
 import SignIn from './components/SignIn/SignIn'
 import { Route, Routes } from 'react-router-dom'
 import * as authService from './services/authService.js'
+import * as propertyService from './services/propertyService.js'
 import { useState } from 'react'
+import PropertyForm from './components/PropertyForm/PropertyForm.jsx'
 
 const App = () => {
 
@@ -35,10 +37,15 @@ const App = () => {
     setUser(res)
   }
 
+  const handleAddProperty = async (formData) => {
+    await propertyService.create(formData)
+  }
+
   return (
     <>
       <NavBar user={user} handleSignOut={handleSignOut} />
       <Routes>
+          <Route path= 'properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
           <Route path='/' element={<h1>Hello world!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
           <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
