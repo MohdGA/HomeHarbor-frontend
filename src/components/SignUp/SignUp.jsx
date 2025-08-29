@@ -6,8 +6,8 @@ const SignUp = (props) => {
 
   const initialState = {
     username: '',
+    email: "",
     password: '',
-    passwordConf: '',
   }
 
   const [formData, setFormData] = useState(initialState)
