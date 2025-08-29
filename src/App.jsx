@@ -5,14 +5,29 @@ import SignIn from './components/SignIn/SignIn'
 import { Route, Routes } from 'react-router-dom'
 import * as authService from './services/authService.js'
 import * as propertyService from './services/propertyService.js'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PropertyForm from './components/PropertyForm/PropertyForm.jsx'
+import PropertyList from './components/PropertyList/PropertyList.jsx'
 
 const App = () => {
 
   const initialState = authService.getUser()
 
   const [user, setUser] = useState(initialState)
+
+   const [properties, setProperties] = useState([])
+
+     useEffect(() => {
+    const loadProperties = async () => {
+      try {
+        const res = await propertyService.index()
+        setProperties(res)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    loadProperties()
+  }, [])
 
   const handleSignUp = async (formData) => {
     try {
@@ -38,7 +53,8 @@ const App = () => {
   }
 
   const handleAddProperty = async (formData) => {
-    await propertyService.create(formData)
+  const newProperty = await propertyService.create(formData)
+       setProperties([...properties, newProperty])
   }
 
   return (
@@ -46,6 +62,7 @@ const App = () => {
       <NavBar user={user} handleSignOut={handleSignOut} />
       <Routes>
           <Route path= 'properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
+          <Route path='/properties' element={<PropertyList properties={properties} />} />
           <Route path='/' element={<h1>Hello world!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
           <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
