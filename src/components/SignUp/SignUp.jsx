@@ -53,6 +53,11 @@ const SignUp = (props) => {
         <label>Username:</label>
         <input type="text" name='username' onChange={handleChange} />
         <br />
+ 
+        <label>Email:</label>
+        <input type="email" name='email' onChange={handleChange} />
+        <br />
+
         <label>Password:</label>
         <input type="password" name='password' onChange={handleChange} />
         <br />
