@@ -7,6 +7,9 @@ const PropertyList = (props) => {
     return <h2>No Properties Yet</h2>;
   }
 
+// ========================================================
+  const {handleDeleteProperty } = props;
+// ===============================================
   return (
     <div>
       <h1>Properties List</h1>
@@ -23,6 +26,9 @@ const PropertyList = (props) => {
                   <p>Location: {property.location}</p>
 
                     <p><small> Owner: {property.user?.username || "Unknown"} </small></p>
+{/* ========================================================================================================================================================= */}
+                 <button onClick={() => handleDeleteProperty(property._id || property.id)}>Delete {property.title}</button>
+ {/*=============================================================================================================================================================  */}
              <hr />
              
         </div>
