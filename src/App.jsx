@@ -57,12 +57,22 @@ const App = () => {
        setProperties([...properties, newProperty])
   }
 
+  // ===========================================================================================
+  const handleDeleteProperty = async (propertyId) => {
+  try {
+    await propertyService.deleteProperty(propertyId);
+    setProperties(prev => prev.filter(p => (p._id || p.id) !== propertyId));
+  } catch (error) {
+    console.error("Failed to delete property", error);
+  }
+};
+// =======================================================================================================
   return (
     <>
       <NavBar user={user} handleSignOut={handleSignOut} />
       <Routes>
           <Route path= 'properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
-          <Route path='/properties' element={<PropertyList properties={properties} />} />
+          <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
           <Route path='/' element={<h1>Hello world!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
           <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
