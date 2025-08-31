@@ -73,6 +73,19 @@ const App = () => {
   }
 };
 // =======================================================================================================
+
+  const handleUpdateProperty = async (formData, propertyId) => {
+    console.log('in update')
+    const updatedProperty = await propertyService.update(formData, propertyId)
+    
+    const updatedPropertyList = properties.map((property) => 
+      property.id !== updatedProperty.id ? property : updatedProperty
+    )
+    setProperties(updatedPropertyList)
+    navigate('/properties')
+    return updatedProperty
+  }
+
   return (
     <>
       <NavBar user={user} handleSignOut={handleSignOut} />
