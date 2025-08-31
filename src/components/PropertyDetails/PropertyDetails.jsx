@@ -20,6 +20,18 @@ const PropertyDetails = (props) => {
 
  const {handleDeleteProperty } = props;
 
+ const handleDeleteReview = async (reviewId) => {
+    try {
+      await propertyService.deleteReviews(propertyId, reviewId);
+      setProperty(prev => ({
+        ...prev,
+        reviews: prev.reviews.filter(r => r.id !== reviewId)
+      }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
 
  const handleReview = async (reviewData) => {
     try {
@@ -32,6 +44,19 @@ const PropertyDetails = (props) => {
       console.log(err);
     }
   };
+
+  const handleEditReview = async (reviewId, newData) => {
+  try {
+    const updatedReview = await propertyService.updateReviews(propertyId, reviewId, newData)
+    setProperty(prev => ({
+      ...prev,
+      reviews: prev.reviews.map(r => r.id === reviewId ? updatedReview : r)
+    }))
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 
 
  if (!property) {
@@ -46,14 +71,23 @@ const PropertyDetails = (props) => {
   <p>Rooms: {property.numOfRooms}</p>
   <p>Bathrooms: {property.numOfBathrooms}</p> 
   <p>Location: {property.location}</p> 
-
+   
+   
   <button onClick={() => handleDeleteProperty(property._id || property.id)}>Delete {property.title}</button>  
 
   <h3>Add a Review</h3>
   <ReviewForm handleReview={handleReview} />
 
   <h3>Reviews</h3>
+  
   <ul>
+    {property.reviews?.map(r => (
+      <li key={r.id}>
+        {r.content}
+        <button onClick={() => handleDeleteReview(r.id)}>Delete</button>
+        <button onClick={() => handleEditReview(r.id, { content: 'Updated review content' })}>Edit</button>
+      </li>
+    ))}
     {property.reviews?.map(r => <li key={r.id}>{r.content}</li>)}
   </ul>
 </>

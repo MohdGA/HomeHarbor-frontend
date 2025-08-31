@@ -112,6 +112,20 @@ const deleteReviews = async (propertyId , reviewsId) => {
   }
 }
 
+const updateReviews = async (propertyId, reviewId, formData) => {
+  const token = localStorage.getItem('token')
+  const res = await fetch(`${BASE_URL}/${propertyId}/reviews/${reviewId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(formData)
+  })
+  const data = await res.json()
+  return data
+}
+
 export {
     index,
     show,
@@ -120,5 +134,7 @@ export {
     deleteProperty,
     createReviews,
     deleteReviews,
+    updateReviews
+
 
 }
