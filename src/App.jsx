@@ -32,7 +32,7 @@ const App = () => {
   const handleSignUp = async (formData) => {
     try {
       const res = await authService.signUp(formData)
-      setUser(res)
+      // setUser(res)
       // return success
       return { success: true }
     } catch(err){
@@ -71,7 +71,7 @@ const App = () => {
     <>
       <NavBar user={user} handleSignOut={handleSignOut} />
       <Routes>
-          <Route path= 'properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
+          <Route path='/properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
           <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
           <Route path='/' element={<h1>Hello world!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
