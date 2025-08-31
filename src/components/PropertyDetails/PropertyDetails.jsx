@@ -20,17 +20,18 @@ const PropertyDetails = (props) => {
 
  const {handleDeleteProperty } = props;
 
- const handleDeleteReview = async (reviewId) => {
-    try {
-      await propertyService.deleteReviews(propertyId, reviewId);
-      setProperty(prev => ({
-        ...prev,
-        reviews: prev.reviews.filter(r => r.id !== reviewId)
-      }));
-    } catch (err) {
-      console.log(err);
-    }
-  };
+const handleDeleteReview = async (reviewId) => {
+  try {
+    await propertyService.deleteReviews(reviewId)
+    setProperty(prev => ({
+      ...prev,
+      reviews: prev.reviews.filter(r => r.id !== reviewId)
+    }))
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 
 
  const handleReview = async (reviewData) => {
@@ -85,7 +86,7 @@ const PropertyDetails = (props) => {
       <li key={r.id}>
         {r.content}
         <button onClick={() => handleDeleteReview(r.id)}>Delete</button>
-        <button onClick={() => handleEditReview(r.id, { content: 'Updated review content' })}>Edit</button>
+        
       </li>
     ))}
     {property.reviews?.map(r => <li key={r.id}>{r.content}</li>)}

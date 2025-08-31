@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as propertyService from './../../services/propertyService';
 
 const ReviewForm = (props) => {

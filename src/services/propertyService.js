@@ -81,36 +81,32 @@ const deleteProperty = async (propertyId) => {
 }
 
 const createReviews = async (formData, propertyId) => {
-  const token = localStorage.getItem('token')
-  const res = await fetch(`${BASE_URL}/${propertyId}/reviews`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify(formData)
-  })
-  const data = await res.json()
-  return data
-}
-
-
-const deleteReviews = async (propertyId , reviewsId) => {
-  try{
-      const token = localStorage.getItem('token')
-    const res = await fetch(`${BASE_URL}/${propertyId}/reviews/${reviewsId}`, {
-      method: 'DELETE',
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${BASE_URL}/${propertyId}/reviews`, {
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      const data = await res.json()
-  return data
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(formData),
+    });
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.log(err);
   }
-   catch (err) {
-    console.log(err)
-  }
+};
+
+
+const deleteReviews = async (reviewId) => {
+  const token = localStorage.getItem('token')
+  await fetch(`${import.meta.env.VITE_BACK_END_SERVER_URL}/reviews/${reviewId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  })
 }
+
 
 const updateReviews = async (propertyId, reviewId, formData) => {
   const token = localStorage.getItem('token')
