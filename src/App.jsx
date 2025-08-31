@@ -12,15 +12,15 @@ import PropertyList from './components/PropertyList/PropertyList.jsx'
 import PropertyDetails from './components/PropertyDetails/PropertyDetails.jsx'
 
 const App = () => {
-  const navigate = useNavigate()
+    const navigate = useNavigate()
 
   const initialState = authService.getUser()
 
   const [user, setUser] = useState(initialState)
-  const [properties, setProperties] = useState([])
-  const [selctedProperty, setSelctedProperty] = useState(null)
 
-  useEffect(() => {
+   const [properties, setProperties] = useState([])
+
+     useEffect(() => {
     const loadProperties = async () => {
       try {
         const res = await propertyService.index()
@@ -56,61 +56,34 @@ const App = () => {
   }
 
   const handleAddProperty = async (formData) => {
-    const newProperty = await propertyService.create(formData)
-    setProperties([...properties, newProperty])
-    navigate('/properties')
+  const newProperty = await propertyService.create(formData)
+       setProperties([...properties, newProperty])
   }
 
   // ===========================================================================================
   const handleDeleteProperty = async (propertyId) => {
-    try {
-      await propertyService.deleteProperty(propertyId);
-      setProperties(properties.filter(properties => properties.id !== propertyId))
-      navigate('/properties')
-    } catch (error) {
-      console.error("Failed to delete property", error);
-    }
-  };
-  // =======================================================================================================
-  const handleUpdateProperty = async (formData, propertyId) => {
-    console.log('in update')
-    const updatedProperty = await propertyService.update(formData, propertyId)
-    
-    const updatedPropertyList = properties.map((property) => 
-      property.id !== updatedProperty.id ? property : updatedProperty
-    )
-    setProperties(updatedPropertyList)
+  try {
+    await propertyService.deleteProperty(propertyId);
+    setProperties(properties.filter(properties => properties.id !== propertyId))
     navigate('/properties')
-    return updatedProperty
+  } catch (error) {
+    console.error("Failed to delete property", error);
   }
-
+};
+// =======================================================================================================
   return (
     <>
       <NavBar user={user} handleSignOut={handleSignOut} />
       <Routes>
-
-        <Route path='/properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
-        <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
-        <Route path="/properties/:propertyId" element={<PropertyDetails properties={properties} handleDeleteProperty={handleDeleteProperty} handleUpdateProperty={handleUpdateProperty}/>} />
-        {/* <Route path='//property/:propertyId' element={ <PropertyDetails user={user} handleUpdateProperty={handleUpdateProperty} handlePropertySelect={handlePropertySelect}/> }/> */}
-        <Route path='/property/:propertyId/edit' element={<PropertyForm selctedProperty ={selctedProperty} handleUpdateProperty={handleUpdateProperty} handleAddProperty={handleAddProperty}/>}/>
-
-        <Route path='/' element={<h1>Hello world!</h1>} />
-        <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
-        <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
-        <Route path='*' element={<h1>404</h1>} />
-      </Routes>
-
-//           <Route path='/properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
-//           <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
-//           <Route path="/properties/:propertyId" element={<PropertyDetails  properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
-//           <Route path='/' element={<h1>Hello!</h1>} />
-//           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
-//           <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
-//           <Route path='*' element={<h1>404</h1>} />
+          <Route path='/properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
+          <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
+          <Route path="/properties/:propertyId" element={<PropertyDetails  properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
+          <Route path='/' element={<h1>Hello!</h1>} />
+          <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
+          <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
+          <Route path='*' element={<h1>404</h1>} />
     </Routes>
             <Footer /> 
-
     </>
 
     // <>
@@ -136,3 +109,5 @@ const App = () => {
 }
 
 export default App
+
+
