@@ -16,6 +16,8 @@ const PropertyDetails = (props) => {
   }, [propertyId]);
 
   const { handleDeleteProperty } = props;
+  const {handleUpdateProperty} = props;
+
 
   const handleDeleteReview = async (reviewId) => {
     try {
@@ -74,6 +76,10 @@ const PropertyDetails = (props) => {
       <button onClick={() => handleDeleteProperty(property._id || property.id)}>
         Delete {property.title}
       </button>
+
+       <Link to={`/property/${propertyId}/edit`}>
+        <button>Edit</button>  
+      </Link> 
 
       <h3>Add a Review</h3>
       <ReviewForm handleReview={handleReview} />
