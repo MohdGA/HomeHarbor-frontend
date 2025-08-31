@@ -10,13 +10,18 @@ const index = async () => {
 }
 
 const show = async (propertyId) => {
-    try {
-        const res = await fetch(`${BASE_URL}/${propertyId}`)
-        const data = await res.json()
-        return data
-    } catch (err) {
-        console.log(err)
-    }
+  try {
+    const token = localStorage.getItem('token')
+    const res = await fetch(`${BASE_URL}/${propertyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const data = await res.json()
+    return data
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 const create = async (formData) => {

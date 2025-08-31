@@ -2,14 +2,16 @@ import './App.css'
 import NavBar from './components/NavBar/NavBar'
 import SignUp from './components/SignUp/SignUp'
 import SignIn from './components/SignIn/SignIn'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import * as authService from './services/authService.js'
 import * as propertyService from './services/propertyService.js'
 import { useState, useEffect } from 'react'
 import PropertyForm from './components/PropertyForm/PropertyForm.jsx'
 import PropertyList from './components/PropertyList/PropertyList.jsx'
+import PropertyDetails from './components/PropertyDetails/PropertyDetails.jsx'
 
 const App = () => {
+    const navigate = useNavigate()
 
   const initialState = authService.getUser()
 
@@ -61,7 +63,8 @@ const App = () => {
   const handleDeleteProperty = async (propertyId) => {
   try {
     await propertyService.deleteProperty(propertyId);
-    setProperties(prev => prev.filter(p => (p._id || p.id) !== propertyId));
+    setProperties(properties.filter(properties => properties.id !== propertyId))
+    navigate('/properties')
   } catch (error) {
     console.error("Failed to delete property", error);
   }
@@ -73,6 +76,8 @@ const App = () => {
       <Routes>
           <Route path='/properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
           <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
+          <Route path="/properties/:propertyId" element={<PropertyDetails  properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
+
           <Route path='/' element={<h1>Hello world!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
           <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
