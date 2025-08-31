@@ -93,6 +93,7 @@ const App = () => {
           <Route path='/properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
           <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
           <Route path="/properties/:propertyId" element={<PropertyDetails  properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
+          <Route path='/property/:propertyId/edit' element={<PropertyForm selctedProperty ={selctedProperty} handleUpdateProperty={handleUpdateProperty} handleAddProperty={handleAddProperty}/>}/>
           <Route path='/' element={<h1>Hello!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
           <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
