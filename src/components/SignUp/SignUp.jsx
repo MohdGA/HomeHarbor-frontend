@@ -14,29 +14,29 @@ const SignUp = (props) => {
   const [error, setError] = useState(null)
 
 
-  useEffect(() => {
-    if (props.user) {
-      navigate('/')
-    }
-  }, [props.user])
+// useEffect(() => {
+//   if (props.user && !props.justSignedUp) {
+//     navigate('/')
+//   }
+// }, [props.user, props.justSignedUp])
+
 
   const handleChange = (evt) => {
     setFormData({...formData, [evt.target.name]: evt.target.value})
   }
 
-  // made this function asynchronous
-  const handleSubmit = async (evt) => {
-    evt.preventDefault()  
-    // saved the return as "result"
-    const result = await props.handleSignUp(formData)
-    // if sign up is succssful, navigate to home
-    if (result.success){
-      navigate('/')
-    } else {
-      // otherwise, set the error message state 
-      setError(result.message)
-    }
+const handleSubmit = async (evt) => {
+  evt.preventDefault()
+  const result = await props.handleSignUp(formData)
+  console.log(result)
+  if (result.success) {
+    console.log('success')
+    navigate('/sign-in')   // ✅ this will now run
+  } else {
+    setError(result.message)
   }
+}
+
 
   let formIsInvalid = true
 
