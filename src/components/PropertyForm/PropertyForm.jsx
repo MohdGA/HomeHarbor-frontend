@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as propertyService from '../../services/propertyService'
 
+
+
 const PropertyForm = (props) => {
+    const { propertyId } = useParams()
     const initialState = {
        title: '',
        price: '',
@@ -13,14 +16,30 @@ const PropertyForm = (props) => {
 
 const [formData, setFormData] = useState(initialState)
 
+useEffect(() => {
+        const fetchProperty = async () => {
+            const data = await propertyService.show(propertyId)
+            setFormData(data)
+        }
+        if (propertyId) fetchProperty()
+    }, [propertyId])
+
+
 
 const handleChange = (evt) => {
     setFormData({ ...formData, [evt.target.name]: evt.target.value})
 }
 
 const handleSubmit = (evt) => {
+    console.log('in submit')
     evt.preventDefault()
-    props.handleAddProperty(formData)
+    // props.handleAddProperty(formData)
+    
+    if (propertyId) {
+        props.handleUpdateProperty(formData, propertyId)
+    } else {
+        props.handleAddProperty(formData)
+    }
 }
 
 return (
