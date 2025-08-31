@@ -7,16 +7,14 @@ const PropertyList = (props) => {
     return <h2>No Properties Yet</h2>;
   }
 
-// ========================================================
-  const {handleDeleteProperty } = props;
-// ===============================================
+
   return (
     <div>
       <h1>Properties List</h1>
          {properties.map((property, index) => (
             <div key={property._id || index}>
               
-            <Link to={`/properties/${property._id}`}>
+            <Link to={`/properties/${property.id}`}>
 
                     <h2>{property.title}</h2>
          </Link>
@@ -26,9 +24,6 @@ const PropertyList = (props) => {
                   <p>Location: {property.location}</p>
 
                     <p><small> Owner: {property.user?.username || "Unknown"} </small></p>
-{/* ========================================================================================================================================================= */}
-                 <button onClick={() => handleDeleteProperty(property._id || property.id)}>Delete {property.title}</button>
- {/*=============================================================================================================================================================  */}
              <hr />
              
         </div>
