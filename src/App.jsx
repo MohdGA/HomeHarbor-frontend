@@ -20,6 +20,8 @@ const App = () => {
 
    const [properties, setProperties] = useState([])
 
+   const [selctedProperty, setSelctedProperty] = useState(null)
+
      useEffect(() => {
     const loadProperties = async () => {
       try {
