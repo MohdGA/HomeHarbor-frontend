@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as propertyService from '../../services/propertyService';
+import Map, { Marker } from "react-map-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
   const { propertyId } = useParams();
@@ -16,26 +18,27 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
 
   const [formData, setFormData] = useState(initialState);
   const [uploading, setUploading] = useState(false);
+  const [coordinates, setCoordinates] = useState({ lat: 26.0667, lng: 50.5577 });
 
-  // Fetch property if editing
   useEffect(() => {
     const fetchProperty = async () => {
       const data = await propertyService.show(propertyId);
       setFormData(data);
+      if (data.location) {
+        const [lat, lng] = data.location.split(',').map(Number);
+        if (!isNaN(lat) && !isNaN(lng)) setCoordinates({ lat, lng });
+      }
     };
     if (propertyId) fetchProperty();
   }, [propertyId]);
 
-  // Handle input change
   const handleChange = (evt) => {
     setFormData({ ...formData, [evt.target.name]: evt.target.value });
   };
 
-  // Handle image upload to Cloudinary
   const handleImageChange = async (evt) => {
     const file = evt.target.files[0];
     if (!file) return;
-
     setUploading(true);
     const formDataFile = new FormData();
     formDataFile.append("file", file);
@@ -45,28 +48,26 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
         method: "POST",
         body: formDataFile
       });
-
       if (!res.ok) throw new Error("Upload failed");
-
       const data = await res.json();
-      // Use a temp variable to show the updated state immediately
-      const newFormData = { ...formData, imageUrl: data.url };
-      setFormData(newFormData);
-      console.log("Updated formData:", newFormData);
+      setFormData({ ...formData, imageUrl: data.url });
     } catch (err) {
-      console.error("Image upload failed:", err);
+      console.error(err);
       alert("Image upload failed, try again.");
     } finally {
       setUploading(false);
     }
   };
 
-  // Handle form submit
+  const handleMapClick = (event) => {
+    const { lng, lat } = event.lngLat;
+    setCoordinates({ lat, lng });
+    setFormData({ ...formData, location: `${lat.toFixed(6)},${lng.toFixed(6)}` });
+  };
+
   const handleSubmit = (evt) => {
     evt.preventDefault();
-
     if (uploading) return alert("Image is still uploading, please wait...");
-
     if (propertyId) {
       handleUpdateProperty(formData, propertyId);
     } else {
@@ -127,10 +128,27 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
           type="text"
           name="location"
           id="location-input"
-          placeholder="Location of property"
+          placeholder="Click on map to select location"
           value={formData.location}
-          onChange={handleChange}
+          readOnly
         />
+
+
+        <div style={{ width: "100%", height: "300px", margin: "10px 0" }}>
+          <Map
+            initialViewState={{
+              latitude: coordinates.lat,
+              longitude: coordinates.lng,
+              zoom: 12
+            }}
+            style={{ width: "100%", height: "100%" }}
+            mapStyle="mapbox://styles/mapbox/streets-v11"
+            mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+            onClick={handleMapClick}
+          >
+            <Marker latitude={coordinates.lat} longitude={coordinates.lng} color="red" />
+          </Map>
+        </div>
 
         <label htmlFor="image-input">Property Image</label>
         <input
@@ -142,7 +160,6 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
         />
 
         {uploading && <p>Uploading image...</p>}
-
         {formData.imageUrl && (
           <img src={formData.imageUrl} alt="Property Preview" width="200" />
         )}
