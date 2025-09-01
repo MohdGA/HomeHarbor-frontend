@@ -1,23 +1,38 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import * as propertyService from '../../services/propertyService';
+
+import * as propertyService from "../../services/propertyService";
+import categoryService from "../../services/categoryService";
 
 const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
   const { propertyId } = useParams();
 
   const initialState = {
-    title: '',
-    price: '',
-    numOfRooms: '',
-    numOfBathrooms: '',
-    location: '',
-    imageUrl: '' // Cloudinary URL
+    title: "",
+    price: "",
+    numOfRooms: "",
+    numOfBathrooms: "",
+    location: "",
+    category_id: "",
+    imageUrl: "" // Cloudinary URL
   };
 
   const [formData, setFormData] = useState(initialState);
   const [uploading, setUploading] = useState(false);
+  const [categories, setCategories] = useState([]);
 
-  // Fetch property if editing
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const cats = await categoryService.getCategories();
+        setCategories(cats || []);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+      }
+    };
+    loadCategories();
+  }, []);
+
   useEffect(() => {
     const fetchProperty = async () => {
       const data = await propertyService.show(propertyId);
@@ -26,12 +41,19 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
     if (propertyId) fetchProperty();
   }, [propertyId]);
 
-  // Handle input change
   const handleChange = (evt) => {
     setFormData({ ...formData, [evt.target.name]: evt.target.value });
   };
 
-  // Handle image upload to Cloudinary
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    if (propertyId) {
+      handleUpdateProperty(formData, propertyId);
+    } else {
+      handleAddProperty(formData);
+    }
+  };
+
   const handleImageChange = async (evt) => {
     const file = evt.target.files[0];
     if (!file) return;
@@ -49,28 +71,12 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
       if (!res.ok) throw new Error("Upload failed");
 
       const data = await res.json();
-      // Use a temp variable to show the updated state immediately
-      const newFormData = { ...formData, imageUrl: data.url };
-      setFormData(newFormData);
-      console.log("Updated formData:", newFormData);
+      setFormData((prev) => ({ ...prev, imageUrl: data.url }));
     } catch (err) {
       console.error("Image upload failed:", err);
       alert("Image upload failed, try again.");
     } finally {
       setUploading(false);
-    }
-  };
-
-  // Handle form submit
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
-
-    if (uploading) return alert("Image is still uploading, please wait...");
-
-    if (propertyId) {
-      handleUpdateProperty(formData, propertyId);
-    } else {
-      handleAddProperty(formData);
     }
   };
 
@@ -98,6 +104,21 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
           value={formData.price}
           onChange={handleChange}
         />
+
+        <label htmlFor="category-input">Category</label>
+        <select
+          name="category_id"
+          id="category-input"
+          value={formData.category_id || ""}
+          onChange={handleChange}
+        >
+          <option value="">Select category</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
 
         <label htmlFor="numOfRooms-input">Number Of Rooms</label>
         <input
@@ -154,3 +175,4 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
 };
 
 export default PropertyForm;
+
