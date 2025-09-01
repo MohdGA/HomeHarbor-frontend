@@ -38,7 +38,7 @@ const signIn = async (formData) => {
     if (data.token) {
       localStorage.setItem('token', data.token)
       const decodedToken = JSON.parse(atob(data.token.split('.')[1]))
-      return decodedToken
+      return {...decodedToken, id: decodedToken.sub}
     }
 
   } catch (err) {
@@ -51,7 +51,7 @@ const getUser = () => {
   const token = localStorage.getItem('token')
   if (token) {
     const decodedToken = JSON.parse(atob(token.split('.')[1]))
-    return decodedToken
+    return {...decodedToken, id: decodedToken.sub}
   } 
   return null
 }
