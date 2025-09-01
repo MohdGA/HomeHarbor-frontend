@@ -57,6 +57,7 @@ const PropertyDetails = (props) => {
   //     console.log(err)
   //   }
   // }
+  console.log(property)
 
   if (!property) {
     return <p>Loading property details...</p>;
@@ -72,6 +73,10 @@ const PropertyDetails = (props) => {
       <p>Rooms: {property.numOfRooms}</p>
       <p>Bathrooms: {property.numOfBathrooms}</p>
       <p>Location: {property.location}</p>
+      {property.imageUrl && (
+        <img src={property.imageUrl} alt={property.title} width="300" />
+        )}
+
 
       <button onClick={() => handleDeleteProperty(property._id || property.id)}>
         Delete {property.title}
