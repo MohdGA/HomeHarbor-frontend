@@ -11,13 +11,14 @@ const PropertyDetails = (props) => {
     const fetchProperty = async () => {
       const propertyData = await propertyService.show(propertyId);
       setProperty(propertyData);
+      
     };
     fetchProperty();
   }, [propertyId]);
 
-  const { handleDeleteProperty } = props;
-  const {handleUpdateProperty} = props;
 
+  const {handleUpdateProperty} = props;
+  const isOwner = property?.user?.username === props?.user?.username;
 
   const handleDeleteReview = async (reviewId) => {
     try {
@@ -58,6 +59,7 @@ const PropertyDetails = (props) => {
   //   }
   // }
 
+
   if (!property) {
     return <p>Loading property details...</p>;
   }
@@ -73,13 +75,22 @@ const PropertyDetails = (props) => {
       <p>Bathrooms: {property.numOfBathrooms}</p>
       <p>Location: {property.location}</p>
 
-      <button onClick={() => handleDeleteProperty(property._id || property.id)}>
-        Delete {property.title}
-      </button>
+{isOwner ? (
+  <button onClick={() => props.handleDeleteProperty(property.id)}>
+    Delete {property.title}
+  </button>
 
-       <Link to={`/property/${propertyId}/edit`}>
+  
+) : null}
+
+
+{isOwner ? (
+ <Link to={`/property/${propertyId}/edit`}>
         <button>Edit</button>  
-      </Link> 
+      </Link>
+
+  
+) : null}
 
       <h3>Add a Review</h3>
       <ReviewForm handleReview={handleReview} />
