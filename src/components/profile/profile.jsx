@@ -8,6 +8,7 @@ const Profile = (props) => {
 
         <div className="info">
           <h1>Welcome {props.user ? props.user.username : "Guest"}</h1>
+          <h1>Email: {props.user ? props.user.email : 'email@gmail.com'}</h1>
         </div>
       </div>
     </>

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
 import * as propertyService from "../../services/propertyService";
 import categoryService from "../../services/categoryService";
 
-const PropertyForm = (props) => {
+const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
   const { propertyId } = useParams();
+
   const initialState = {
     title: "",
     price: "",
@@ -12,10 +14,11 @@ const PropertyForm = (props) => {
     numOfBathrooms: "",
     location: "",
     category_id: "",
+    imageUrl: "" // Cloudinary URL
   };
 
   const [formData, setFormData] = useState(initialState);
-
+  const [uploading, setUploading] = useState(false);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -44,11 +47,36 @@ const PropertyForm = (props) => {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-
     if (propertyId) {
-      props.handleUpdateProperty(formData, propertyId);
+      handleUpdateProperty(formData, propertyId);
     } else {
-      props.handleAddProperty(formData);
+      handleAddProperty(formData);
+    }
+  };
+
+  const handleImageChange = async (evt) => {
+    const file = evt.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formDataFile = new FormData();
+    formDataFile.append("file", file);
+
+    try {
+      const res = await fetch("http://localhost:8000/upload/", {
+        method: "POST",
+        body: formDataFile
+      });
+
+      if (!res.ok) throw new Error("Upload failed");
+
+      const data = await res.json();
+      setFormData((prev) => ({ ...prev, imageUrl: data.url }));
+    } catch (err) {
+      console.error("Image upload failed:", err);
+      alert("Image upload failed, try again.");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -76,6 +104,7 @@ const PropertyForm = (props) => {
           value={formData.price}
           onChange={handleChange}
         />
+
         <label htmlFor="category-input">Category</label>
         <select
           name="category_id"
@@ -83,7 +112,7 @@ const PropertyForm = (props) => {
           value={formData.category_id || ""}
           onChange={handleChange}
         >
-          {/* <option value="">Select category</option> */}
+          <option value="">Select category</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
@@ -123,10 +152,27 @@ const PropertyForm = (props) => {
           value={formData.location}
           onChange={handleChange}
         />
-        <button type="submit">Submit</button>
+
+        <label htmlFor="image-input">Property Image</label>
+        <input
+          type="file"
+          name="image"
+          id="image-input"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+
+        {uploading && <p>Uploading image...</p>}
+
+        {formData.imageUrl && (
+          <img src={formData.imageUrl} alt="Property Preview" width="200" />
+        )}
+
+        <button type="submit">{propertyId ? "Update" : "Create"} Property</button>
       </form>
     </main>
   );
 };
 
 export default PropertyForm;
+

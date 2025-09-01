@@ -11,13 +11,14 @@ const PropertyDetails = (props) => {
     const fetchProperty = async () => {
       const propertyData = await propertyService.show(propertyId);
       setProperty(propertyData);
+      
     };
     fetchProperty();
   }, [propertyId]);
 
-  const { handleDeleteProperty } = props;
-  const {handleUpdateProperty} = props;
 
+  const {handleUpdateProperty} = props;
+  const isOwner = property?.user?.username === props?.user?.username;
 
   const handleDeleteReview = async (reviewId) => {
     try {
@@ -57,6 +58,8 @@ const PropertyDetails = (props) => {
   //     console.log(err)
   //   }
   // }
+  console.log(property)
+
 
   if (!property) {
     return <p>Loading property details...</p>;
@@ -73,14 +76,27 @@ const PropertyDetails = (props) => {
       <p>Rooms: {property.numOfRooms}</p>
       <p>Bathrooms: {property.numOfBathrooms}</p>
       <p>Location: {property.location}</p>
+      {property.imageUrl && (
+        <img src={property.imageUrl} alt={property.title} width="300" />
+        )}
 
-      <button onClick={() => handleDeleteProperty(property._id || property.id)}>
-        Delete {property.title}
-      </button>
 
-       <Link to={`/property/${propertyId}/edit`}>
+{isOwner ? (
+  <button onClick={() => props.handleDeleteProperty(property.id)}>
+    Delete {property.title}
+  </button>
+
+  
+) : null}
+
+
+{isOwner ? (
+ <Link to={`/property/${propertyId}/edit`}>
         <button>Edit</button>  
-      </Link> 
+      </Link>
+
+  
+) : null}
 
       <h3>Add a Review</h3>
       <ReviewForm handleReview={handleReview} />
