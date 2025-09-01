@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react'
 import PropertyForm from './components/PropertyForm/PropertyForm.jsx'
 import PropertyList from './components/PropertyList/PropertyList.jsx'
 import PropertyDetails from './components/PropertyDetails/PropertyDetails.jsx'
+import Profile from './components/profile/profile.jsx'
 
 const App = () => {
     const navigate = useNavigate()
@@ -78,6 +79,7 @@ const App = () => {
           <Route path='/properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
           <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
           <Route path="/properties/:propertyId" element={<PropertyDetails  properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
+          <Route path="/profile" element={<Profile user={user}/>}/>
           <Route path='/' element={<h1>Hello!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
           <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
