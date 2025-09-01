@@ -58,6 +58,7 @@ const PropertyDetails = (props) => {
   //     console.log(err)
   //   }
   // }
+  console.log(property)
 
 
   if (!property) {
@@ -74,6 +75,10 @@ const PropertyDetails = (props) => {
       <p>Rooms: {property.numOfRooms}</p>
       <p>Bathrooms: {property.numOfBathrooms}</p>
       <p>Location: {property.location}</p>
+      {property.imageUrl && (
+        <img src={property.imageUrl} alt={property.title} width="300" />
+        )}
+
 
 {isOwner ? (
   <button onClick={() => props.handleDeleteProperty(property.id)}>
