@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react'
 import PropertyForm from './components/PropertyForm/PropertyForm.jsx'
 import PropertyList from './components/PropertyList/PropertyList.jsx'
 import PropertyDetails from './components/PropertyDetails/PropertyDetails.jsx'
+import Profile from './components/profile/profile.jsx'
 
 const App = () => {
     const navigate = useNavigate()
@@ -62,7 +63,6 @@ const App = () => {
        setProperties([...properties, newProperty])
   }
 
-  // ===========================================================================================
   const handleDeleteProperty = async (propertyId) => {
   try {
     await propertyService.deleteProperty(propertyId);
@@ -72,7 +72,7 @@ const App = () => {
     console.error("Failed to delete property", error);
   }
 };
-// =======================================================================================================
+
 
   const handleUpdateProperty = async (formData, propertyId) => {
     console.log('in update')
@@ -94,6 +94,8 @@ const App = () => {
           <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
           <Route path="/properties/:propertyId" element={<PropertyDetails  properties={properties} handleDeleteProperty={handleDeleteProperty} handleUpdateProperty={handleUpdateProperty}/>} />
           <Route path='/property/:propertyId/edit' element={<PropertyForm selctedProperty ={selctedProperty} handleUpdateProperty={handleUpdateProperty} handleAddProperty={handleAddProperty}/>}/>
+
+          <Route path="/profile" element={<Profile user={user}/>}/>
           <Route path='/' element={<h1>Hello!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
           <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
