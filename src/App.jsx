@@ -61,6 +61,7 @@ const App = () => {
   const handleAddProperty = async (formData) => {
   const newProperty = await propertyService.create(formData)
        setProperties([...properties, newProperty])
+       navigate('/properties')
   }
 
   const handleDeleteProperty = async (propertyId) => {
@@ -75,7 +76,6 @@ const App = () => {
 
 
   const handleUpdateProperty = async (formData, propertyId) => {
-    console.log('in update')
     const updatedProperty = await propertyService.update(formData, propertyId)
     
     const updatedPropertyList = properties.map((property) => 

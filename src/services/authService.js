@@ -12,7 +12,6 @@ const signUp = async (formData) => {
     })
 
     const data = await res.json()
-    console.log(data)
 
     if (!res.ok) throw new Error(data.detail || 'Something went wrong')
 
@@ -33,7 +32,6 @@ const signIn = async (formData) => {
     })
 
     const data = await res.json()
-    console.log(data)
 
     if (!res.ok) throw new Error(data.detail || 'Something went wrong')
 
@@ -53,7 +51,6 @@ const getUser = () => {
   const token = localStorage.getItem('token')
   if (token) {
     const decodedToken = JSON.parse(atob(token.split('.')[1]))
-    console.log(decodedToken)
     return decodedToken
   } 
   return null

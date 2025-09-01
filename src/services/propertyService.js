@@ -46,7 +46,6 @@ const create = async (formData) => {
 
 
 const update = async (formData, propertyId) => {
-  console.log('in service')
     try {
         const token = localStorage.getItem('token')
         const res = await fetch(`${BASE_URL}/${propertyId}`, {
@@ -58,7 +57,6 @@ const update = async (formData, propertyId) => {
       body: JSON.stringify(formData)
         })
     const data = await res.json()
-    console.log(data)
     return data
     } catch (err) {
         console.log(err)

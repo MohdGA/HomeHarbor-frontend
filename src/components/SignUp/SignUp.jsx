@@ -28,9 +28,7 @@ const SignUp = (props) => {
 const handleSubmit = async (evt) => {
   evt.preventDefault()
   const result = await props.handleSignUp(formData)
-  console.log(result)
   if (result.success) {
-    console.log('success')
     navigate('/sign-in')   // ✅ this will now run
   } else {
     setError(result.message)
