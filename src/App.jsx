@@ -21,6 +21,8 @@ const App = () => {
 
    const [properties, setProperties] = useState([])
 
+   const [selctedProperty, setSelctedProperty] = useState(null)
+
      useEffect(() => {
     const loadProperties = async () => {
       try {
@@ -61,7 +63,6 @@ const App = () => {
        setProperties([...properties, newProperty])
   }
 
-  // ===========================================================================================
   const handleDeleteProperty = async (propertyId) => {
   try {
     await propertyService.deleteProperty(propertyId);
@@ -71,14 +72,29 @@ const App = () => {
     console.error("Failed to delete property", error);
   }
 };
-// =======================================================================================================
+
+
+  const handleUpdateProperty = async (formData, propertyId) => {
+    console.log('in update')
+    const updatedProperty = await propertyService.update(formData, propertyId)
+    
+    const updatedPropertyList = properties.map((property) => 
+      property.id !== updatedProperty.id ? property : updatedProperty
+    )
+    setProperties(updatedPropertyList)
+    navigate('/properties')
+    return updatedProperty
+  }
+
   return (
     <>
       <NavBar user={user} handleSignOut={handleSignOut} />
       <Routes>
           <Route path='/properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
           <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
-          <Route path="/properties/:propertyId" element={<PropertyDetails  properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
+          <Route path="/properties/:propertyId" element={<PropertyDetails  properties={properties} handleDeleteProperty={handleDeleteProperty} handleUpdateProperty={handleUpdateProperty}/>} />
+          <Route path='/property/:propertyId/edit' element={<PropertyForm selctedProperty ={selctedProperty} handleUpdateProperty={handleUpdateProperty} handleAddProperty={handleAddProperty}/>}/>
+
           <Route path="/profile" element={<Profile user={user}/>}/>
           <Route path='/' element={<h1>Hello!</h1>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
