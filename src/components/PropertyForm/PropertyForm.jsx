@@ -31,9 +31,7 @@ const handleChange = (evt) => {
 }
 
 const handleSubmit = (evt) => {
-    console.log('in submit')
     evt.preventDefault()
-    // props.handleAddProperty(formData)
     
     if (propertyId) {
         props.handleUpdateProperty(formData, propertyId)
