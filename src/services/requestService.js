@@ -1,26 +1,38 @@
-const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/properties/`
+const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/properties`;
 
 const index = async (propertyId) => {
-  try{
-    const token = localStorage.getItem('token')
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
     const res = await fetch(`${BASE_URL}/${propertyId}/requests`, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
-    })
+    });
 
-    const data = await res.json()
-    return data
-  } catch(error){
-    console.log(error)
+    if (!res.ok) {
+      throw new Error(`Failed to fetch requests: ${res.status}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Request service error:", error);
+    throw error;
   }
-}
+};
 
 const create = async (formData, propertyId) => {
-  try{
-    const token = localStorage.getItem('token')
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
 
-    const res = await fetch(`${BASE_URL}/${propertyId}/requests`,{
+    const res = await fetch(`${BASE_URL}/${propertyId}/requests`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -29,32 +41,24 @@ const create = async (formData, propertyId) => {
       body: JSON.stringify(formData)
     });
 
-    const data = await res.json();
-    return data;
-  } catch(error){
-    console.log(error)
+    if (!res.ok) {
+      if (res.status === 401) {
+        throw new Error("Authentication failed");
+      }
+      if (res.status === 404) {
+        throw new Error("Property not found");
+      }
+      throw new Error(`Failed to create request: ${res.status}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Request creation error:", error);
+    throw error;
   }
 };
-
-// const show = async (requestId) => {
-//   try{
-//     const token = localStorage.getItem('token');
-    
-//     const res = await fetch(`${BASE_URL}/requests/${requestId}` , {
-//       headers: {
-//         Authorization: `Bearer ${token}`
-//       }
-//     });
-
-//     const data = await res.json();
-//     return data;
-
-//   } catch(error){
-//     console.log(error)
-//   }
-// }
 
 export {
   index,
   create,
-}
+};
