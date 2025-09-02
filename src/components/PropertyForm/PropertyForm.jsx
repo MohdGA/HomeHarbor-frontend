@@ -16,7 +16,7 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
     numOfBathrooms: "",
     location: "",
     category_id: "",
-    imageUrl: "" // Cloudinary URL
+    images: [] // Cloudinary URL
   };
 
   const [formData, setFormData] = useState(initialState);
@@ -65,32 +65,33 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
 //   };
 
 
-  const handleImageChange = async (evt) => {
-    const file = evt.target.files[0];
-    if (!file) return;
-    setUploading(true);
-    const formDataFile = new FormData();
-    formDataFile.append("file", file);
+const handleImageChange = async (evt) => {
+  const files = evt.target.files;
+  if (!files.length) return;
 
-    try {
-      const res = await fetch("http://localhost:8000/upload/", {
-        method: "POST",
-        body: formDataFile
-      });
-      if (!res.ok) throw new Error("Upload failed");
-      const data = await res.json();
+  setUploading(true);
+  const formDataFile = new FormData();
+  for (let i = 0; i < files.length; i++) {
+    formDataFile.append("files", files[i]); // must match backend param
+  }
 
-      setFormData({ ...formData, imageUrl: data.url });
+  try {
+    const res = await fetch("http://localhost:8000/upload/", {
+      method: "POST",
+      body: formDataFile
+    });
+    if (!res.ok) throw new Error("Upload failed");
+    const data = await res.json();
 
-//       setFormData((prev) => ({ ...prev, imageUrl: data.url }));
+    setFormData({ ...formData, images: data.urls });
+  } catch (err) {
+    console.error(err);
+    alert("Image upload failed, try again.");
+  } finally {
+    setUploading(false);
+  }
+};
 
-    } catch (err) {
-      console.error(err);
-      alert("Image upload failed, try again.");
-    } finally {
-      setUploading(false);
-    }
-  };
 
 
   const handleMapClick = (event) => {
@@ -191,27 +192,35 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
               zoom: 12
             }}
             style={{ width: "100%", height: "100%" }}
-            mapStyle="mapbox://styles/mapbox/streets-v11"
+            mapStyle="mapbox://styles/mapbox/outdoors-v12"
             mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
             onClick={handleMapClick}
           >
-            <Marker latitude={coordinates.lat} longitude={coordinates.lng} color="red" />
+            <Marker latitude={coordinates.lat} longitude={coordinates.lng} anchor="bottom">
+  <img
+    src="https://cdn-icons-png.flaticon.com/512/69/69524.png"
+    alt="House"
+    style={{ width: "30px", height: "30px" }}
+  />
+</Marker>
           </Map>
         </div>
 
-        <label htmlFor="image-input">Property Image</label>
-        <input
-          type="file"
-          name="image"
-          id="image-input"
-          accept="image/*"
-          onChange={handleImageChange}
-        />
+<label htmlFor="image-input">Property Images</label>
+<input
+  type="file"
+  name="images"
+  id="image-input"
+  accept="image/*"
+  multiple
+  onChange={handleImageChange}
+/>
 
-        {uploading && <p>Uploading image...</p>}
-        {formData.imageUrl && (
-          <img src={formData.imageUrl} alt="Property Preview" width="200" />
-        )}
+{uploading && <p>Uploading images...</p>}
+{formData.images?.map((img, i) => (
+  <img key={i} src={img} alt={`Property ${i}`} width="200" />
+))}
+
 
         <button type="submit">{propertyId ? "Update" : "Create"} Property</button>
       </form>
