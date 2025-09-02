@@ -63,6 +63,7 @@ const PropertyDetails = (props) => {
 
       <h1>{property.title}</h1>
       <p>Price: {property.price} BHD</p>
+      <p>Category: {property.category?.name || property.category || "Uncategorized"}</p>
       <p>Rooms: {property.numOfRooms}</p>
       <p>Bathrooms: {property.numOfBathrooms}</p>
       <p>Location: {property.location}</p>

@@ -1,24 +1,45 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
 import * as propertyService from '../../services/propertyService';
 import Map, { Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import * as propertyService from "../../services/propertyService";
+import categoryService from "../../services/categoryService";
+
 
 const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
   const { propertyId } = useParams();
 
   const initialState = {
-    title: '',
-    price: '',
-    numOfRooms: '',
-    numOfBathrooms: '',
-    location: '',
-    imageUrl: '' // Cloudinary URL
+    title: "",
+    price: "",
+    numOfRooms: "",
+    numOfBathrooms: "",
+    location: "",
+    category_id: "",
+    imageUrl: "" // Cloudinary URL
   };
 
   const [formData, setFormData] = useState(initialState);
   const [uploading, setUploading] = useState(false);
+
   const [coordinates, setCoordinates] = useState({ lat: 26.0667, lng: 50.5577 });
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const cats = await categoryService.getCategories();
+        setCategories(cats || []);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+      }
+    };
+    loadCategories();
+  }, []);
+
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -34,7 +55,17 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
 
   const handleChange = (evt) => {
     setFormData({ ...formData, [evt.target.name]: evt.target.value });
-  };
+  }
+                
+//   const handleSubmit = (evt) => {
+//     evt.preventDefault();
+//     if (propertyId) {
+//       handleUpdateProperty(formData, propertyId);
+//     } else {
+//       handleAddProperty(formData);
+//     }
+//   };
+
 
   const handleImageChange = async (evt) => {
     const file = evt.target.files[0];
@@ -50,7 +81,11 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
       });
       if (!res.ok) throw new Error("Upload failed");
       const data = await res.json();
+
       setFormData({ ...formData, imageUrl: data.url });
+
+//       setFormData((prev) => ({ ...prev, imageUrl: data.url }));
+
     } catch (err) {
       console.error(err);
       alert("Image upload failed, try again.");
@@ -58,6 +93,7 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
       setUploading(false);
     }
   };
+
 
   const handleMapClick = (event) => {
     const { lng, lat } = event.lngLat;
@@ -99,6 +135,21 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
           value={formData.price}
           onChange={handleChange}
         />
+
+        <label htmlFor="category-input">Category</label>
+        <select
+          name="category_id"
+          id="category-input"
+          value={formData.category_id || ""}
+          onChange={handleChange}
+        >
+          <option value="">Select category</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
 
         <label htmlFor="numOfRooms-input">Number Of Rooms</label>
         <input
@@ -171,3 +222,4 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
 };
 
 export default PropertyForm;
+

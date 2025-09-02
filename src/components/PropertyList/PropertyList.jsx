@@ -19,6 +19,7 @@ const PropertyList = (props) => {
                     <h2>{property.title}</h2>
          </Link>
                   <p>Price: {property.price} BHD</p>
+                  <p>Category: {property.category?.name || property.category || "Uncategorized"}</p>
                   <p>Rooms: {property.numOfRooms}     </p>
                   <p>Bathrooms: {property.numOfBathrooms}</p> 
                   <p>Location: {property.location}</p>
