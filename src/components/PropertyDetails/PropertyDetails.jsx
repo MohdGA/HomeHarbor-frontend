@@ -67,7 +67,9 @@ const PropertyDetails = (props) => {
       <p>Rooms: {property.numOfRooms}</p>
       <p>Bathrooms: {property.numOfBathrooms}</p>
       <p>Location: {property.location}</p>
-      {property.imageUrl && <img src={property.imageUrl} alt={property.title} width="300" />}
+      {property.images?.map((img, i) => (
+  <img key={i} src={img} alt={`${property.title} ${i}`} width="300" />
+))}
 
       
       <div style={{ width: "100%", height: "300px", margin: "10px 0" }}>
@@ -78,10 +80,16 @@ const PropertyDetails = (props) => {
             zoom: 12
           }}
           style={{ width: "100%", height: "100%" }}
-          mapStyle="mapbox://styles/mapbox/streets-v11"
+          mapStyle="mapbox://styles/mapbox/outdoors-v12"
           mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         >
-          <Marker latitude={coordinates.lat} longitude={coordinates.lng} color="red" />
+         <Marker latitude={coordinates.lat} longitude={coordinates.lng} anchor="bottom">
+  <img
+    src="https://cdn-icons-png.flaticon.com/512/69/69524.png"
+    alt="House"
+    style={{ width: "30px", height: "30px" }}
+  />
+</Marker>
         </Map>
       </div>
 

@@ -61,6 +61,14 @@ const PropertyList = ({ properties }) => {
             <Link to={`/properties/${property.id}`}>
               <h2>{property.title}</h2>
             </Link>
+                  {property.images && property.images.length > 0 && (
+        <img
+          src={property.images[0]}
+          alt={property.title}
+          width="200"
+          style={{ display: "block", margin: "10px 0" }}
+        />
+      )}
             <p>Price: {property.price} BHD</p>
             <p>Category: {property.category?.name || "Uncategorized"}</p>
             <p>Rooms: {property.numOfRooms}</p>
