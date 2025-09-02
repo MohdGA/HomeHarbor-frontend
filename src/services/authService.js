@@ -51,7 +51,7 @@ const getUser = () => {
   const token = localStorage.getItem('token')
   if (token) {
     const decodedToken = JSON.parse(atob(token.split('.')[1]))
-    return {...decodedToken, id: decodedToken.sub}
+    return {...decodedToken, id: decodedToken.sub, username: decodedToken.username}
   } 
   return null
 }

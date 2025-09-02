@@ -91,7 +91,7 @@ const App = () => {
       <NavBar user={user} handleSignOut={handleSignOut} />
       <Routes>
           <Route path='/properties/new' element={<PropertyForm handleAddProperty={handleAddProperty} />}/>
-          <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty}/>} />
+          <Route path='/properties' element={<PropertyList properties={properties} handleDeleteProperty={handleDeleteProperty} currentUser={user}/>} />
           <Route path="/properties/:propertyId" element={<PropertyDetails user={user}  properties={properties} handleDeleteProperty={handleDeleteProperty} handleUpdateProperty={handleUpdateProperty}/>} />
           <Route path='/property/:propertyId/edit' element={<PropertyForm selctedProperty ={selctedProperty} handleUpdateProperty={handleUpdateProperty} handleAddProperty={handleAddProperty}/>}/>
 
