@@ -1,0 +1,72 @@
+
+
+
+
+
+
+.footer {
+  background-color: #f8f9fa; /* light gray */
+  color: #004d40; /* dark teal text */
+  padding: 40px 20px;
+  text-align: center;
+  margin-top: auto;
+  border-top: 1px solid #d1e8e4;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.footer-brand {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #00bfa6; /* same teal accent as navbar */
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.footer-text {
+  font-weight: 500;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  color: #004d40; /* dark teal text */
+}
+
+.footer-links {
+  margin-bottom: 20px;
+}
+
+.footer-link {
+  color: #004d40; /* dark teal links */
+  margin: 0 12px;
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.footer-link::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #00bfa6; /* teal underline */
+  transition: width 0.3s ease-in-out;
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
+
+.footer-icons a {
+  color: #004d40; /* dark teal icons */
+  margin: 0 12px;
+  font-size: 1.3rem;
+  display: inline-block;
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.footer-icons a:hover {
+  transform: translateY(-2px);
+  color: #00bfa6; /* teal hover */
+}

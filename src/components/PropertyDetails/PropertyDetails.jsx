@@ -1,30 +1,67 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import * as propertyService from "../../services/propertyService";
 import ReviewForm from "../ReviewForm/ReviewForm";
 import Map, { Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { FaBed, FaBath, FaMoneyBillWave, FaMapMarkerAlt, FaHome } from "react-icons/fa";
+import "./PropertyDetails.css";
 
 const PropertyDetails = (props) => {
   const { propertyId } = useParams();
   const [property, setProperty] = useState();
-  const [coordinates, setCoordinates] = useState({ lat: 26.0667, lng: 50.5577 }); 
+  const [coordinates, setCoordinates] = useState({ lat: 26.0667, lng: 50.5577 });
+  const [mainImage, setMainImage] = useState(null);
+  const [fade, setFade] = useState(false);
+
+  // Helper function to format text for display
+  const formatText = useCallback((text) => {
+    if (!text) return '';
+    return text;
+  }, []);
 
   useEffect(() => {
     const fetchProperty = async () => {
-      const propertyData = await propertyService.show(propertyId);
-      setProperty(propertyData);
-
-     
-      if (propertyData.location) {
-        const [lat, lng] = propertyData.location.split(",").map(Number);
-        if (!isNaN(lat) && !isNaN(lng)) setCoordinates({ lat, lng });
+      try {
+        const propertyData = await propertyService.show(propertyId);
+        setProperty(propertyData);
+        setMainImage(propertyData.images?.[0] || null);
+        
+        if (propertyData.location) {
+          const [lat, lng] = propertyData.location.split(",").map(Number);
+          if (!isNaN(lat) && !isNaN(lng)) {
+            setCoordinates({ lat, lng });
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching property:", error);
       }
     };
+    
     fetchProperty();
   }, [propertyId]);
 
-  const { handleUpdateProperty } = props;
+  // Auto-slide images every 3 seconds
+  useEffect(() => {
+    if (property?.images?.length > 1) {
+      const interval = setInterval(() => {
+        const currentIndex = property.images.indexOf(mainImage);
+        const nextIndex = (currentIndex + 1) % property.images.length;
+        handleSetMainImage(property.images[nextIndex]);
+      }, 3000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [property, mainImage]);
+
+  const handleSetMainImage = useCallback((img) => {
+    setFade(true);
+    setTimeout(() => {
+      setMainImage(img);
+      setFade(false);
+    }, 400);
+  }, []);
+
   const isOwner = property?.user?.username === props?.user?.username;
 
   const handleDeleteReview = async (reviewId) => {
@@ -35,7 +72,7 @@ const PropertyDetails = (props) => {
         reviews: prev.reviews.filter((r) => r.id !== reviewId),
       }));
     } catch (err) {
-      console.log(err);
+      console.error("Error deleting review:", err);
     }
   };
 
@@ -47,32 +84,114 @@ const PropertyDetails = (props) => {
         reviews: [...(prev.reviews || []), newReview],
       }));
     } catch (err) {
-      console.log(err);
+      console.error("Error creating review:", err);
     }
   };
 
+  const openInGoogleMaps = useCallback(() => {
+    if (!property?.location) return;
+    const url = `https://www.google.com/maps/search/?api=1&query=${property.location}`;
+    window.open(url, "_blank");
+  }, [property?.location]);
+
+  // Safety checks for rendering
+  const safeImages = property?.images || [];
+  const safeReviews = property?.reviews || [];
+  const displayMainImage = mainImage || safeImages[0];
+
   if (!property) {
-    return <p>Loading property details...</p>;
+    return <div className="loading-container"><p>Loading property details...</p></div>;
   }
 
   return (
     <>
-      <Link to="/properties">
-        <h2>← Back</h2>
-      </Link>
-
-      <h1>{property.title}</h1>
-      <p>Price: {property.price} BHD</p>
-      <p>Category: {property.category?.name || property.category || "Uncategorized"}</p>
-      <p>Rooms: {property.numOfRooms}</p>
-      <p>Bathrooms: {property.numOfBathrooms}</p>
-      <p>Location: {property.location}</p>
-      {property.images?.map((img, i) => (
-  <img key={i} src={img} alt={`${property.title} ${i}`} width="300" />
-))}
-
+      <Link to="/properties" className="back-link">← Back</Link>
       
-      <div style={{ width: "100%", height: "300px", margin: "10px 0" }}>
+      <div className="property-container">
+        {/* Left: Images */}
+        <div className="image-section">
+          {displayMainImage && (
+            <img
+              src={displayMainImage}
+              alt="Main property image"
+              className={`main-image ${fade ? "fade-out" : ""}`}
+            />
+          )}
+          
+          {safeImages.length > 1 && (
+            <div className="thumbnail-images">
+              {safeImages.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt={`Property thumbnail ${i + 1}`}
+                  className={img === mainImage ? "active" : ""}
+                  onClick={() => handleSetMainImage(img)}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* InfoCards row below the main image */}
+          <div className="info-cards-row">
+            <InfoCard 
+              icon={<FaMoneyBillWave />} 
+              title="Price" 
+              value={`${property.price} BHD`} 
+              color="#cfa15e" 
+            />
+            <InfoCard 
+              icon={<FaBed />} 
+              title="Bedrooms" 
+              value={property.numOfRooms || 'N/A'} 
+              color="#8fbcd4" 
+            />
+            <InfoCard 
+              icon={<FaBath />} 
+              title="Bathrooms" 
+              value={property.numOfBathrooms || 'N/A'} 
+              color="#b28cce" 
+            />
+            <InfoCard 
+              icon={<FaMapMarkerAlt />} 
+              title="Address" 
+              value={property.location} 
+              color="#e07b91" 
+              clickable 
+              onClick={openInGoogleMaps}
+            />
+            <InfoCard 
+              icon={<FaHome />} 
+              title="Type" 
+              value={property.category?.name || property.category || "Other"} 
+              color="#5aa469" 
+            />
+          </div>
+        </div>
+
+        {/* Right: Info Section */}
+        <div className="info-section">
+          <h1>{property.title}</h1>
+          <p><strong>Description:</strong> {property.description || 'No description available.'}</p>
+          
+          {isOwner && (
+            <div className="owner-actions">
+              <button 
+                onClick={() => props.handleDeleteProperty(property.id)}
+                className="delete-btn"
+              >
+                Delete
+              </button>
+              <Link to={`/property/${propertyId}/edit`}>
+                <button className="edit-btn">Edit</button>
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Map */}
+      <div className="map-container">
         <Map
           initialViewState={{
             latitude: coordinates.lat,
@@ -83,42 +202,92 @@ const PropertyDetails = (props) => {
           mapStyle="mapbox://styles/mapbox/outdoors-v12"
           mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         >
-         <Marker latitude={coordinates.lat} longitude={coordinates.lng} anchor="bottom">
-  <img
-    src="https://cdn-icons-png.flaticon.com/512/69/69524.png"
-    alt="House"
-    style={{ width: "30px", height: "30px" }}
-  />
-</Marker>
+          <Marker latitude={coordinates.lat} longitude={coordinates.lng} anchor="bottom">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/69/69524.png"
+              alt="Property location marker"
+              style={{ width: "30px", height: "30px" }}
+            />
+          </Marker>
         </Map>
       </div>
 
-      {isOwner && (
-        <>
-          <button onClick={() => props.handleDeleteProperty(property.id)}>
-            Delete {property.title}
-          </button>
-
-          <Link to={`/property/${propertyId}/edit`}>
-            <button>Edit</button>
-          </Link>
-        </>
-      )}
-
-      <h3>Add a Review</h3>
-      <ReviewForm handleReview={handleReview} />
-
-      <h3>Reviews</h3>
-      <ul>
-        {property.reviews?.map((r) => (
-          <li key={r.id}>
-            <strong>{r.user?.name || r.user_id}</strong>: {r.content}
-            <button onClick={() => handleDeleteReview(r.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      {/* Reviews - Enhanced Section */}
+      <div className="review-section">
+        <div className="review-header">
+          <h3>Reviews & Feedback ({safeReviews.length})</h3>
+          <div className="review-stats">
+            <span className="review-count">{safeReviews.length} total reviews</span>
+          </div>
+        </div>
+        
+        <div className="review-form-container">
+          <ReviewForm handleReview={handleReview} />
+        </div>
+        
+        {safeReviews.length === 0 ? (
+          <div className="no-reviews">
+            <div className="no-reviews-icon">💬</div>
+            <p>No reviews yet. Be the first to share your experience with this property!</p>
+          </div>
+        ) : (
+          <div className="review-list-container">
+            <ul className="review-list">
+              {safeReviews.map((r, index) => (
+                <li key={r.id} className="review-item" style={{'--animation-delay': `${index * 0.1}s`}}>
+                  <div className="review-content">
+                    <div className="review-header-item">
+                      <div className="reviewer-info">
+                        <div className="reviewer-avatar">
+                          {(r.user?.name || `User ${r.user_id}`).charAt(0).toUpperCase()}
+                        </div>
+                        <div className="reviewer-details">
+                          <strong className="reviewer-name">
+                            {r.user?.name || `User ${r.user_id}`}
+                          </strong>
+                          <span className="review-date">
+                            {r.created_at ? new Date(r.created_at).toLocaleDateString() : 'Recently'}
+                          </span>
+                        </div>
+                      </div>
+                      {(isOwner || r.user_id === props?.user?.id) && (
+                        <button 
+                          className="delete-review-btn"
+                          onClick={() => handleDeleteReview(r.id)}
+                          title="Delete this review"
+                        >
+                          🗑️
+                        </button>
+                      )}
+                    </div>
+                    <div className="review-text">
+                      {r.content}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </>
   );
 };
+
+// InfoCard Component with enhanced styling for full text display
+const InfoCard = ({ icon, title, value, color, clickable, onClick }) => (
+  <div
+    className={`info-card ${clickable ? "clickable" : ""}`}
+    style={{ borderLeft: `5px solid ${color}` }}
+    onClick={onClick}
+    title={clickable ? `Click to view on map: ${value}` : value}
+  >
+    <div className="icon" style={{ color }}>{icon}</div>
+    <div className="info-text">
+      <span className="info-title">{title}</span>
+      <span className="info-value">{value}</span>
+    </div>
+  </div>
+);
 
 export default PropertyDetails;
