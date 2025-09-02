@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { FaBell } from "react-icons/fa";
 import categoryService from "../../services/categoryService";
 import * as RequestService from "../../services/requestService";
 import * as NotificationService from "../../services/notificationService";
+import "./PropertyList.css";
 
 const PropertyList = ({ properties, currentUser }) => {
   const [categories, setCategories] = useState([]);
@@ -26,9 +28,7 @@ const PropertyList = ({ properties, currentUser }) => {
   const handleBuy = async (propertyId) => {
     try {
       const request = await RequestService.create({ approval: false }, propertyId);
-
       const notification = await NotificationService.index(request.id);
-
       setNotifications((prev) => [...prev, notification]);
       alert("Request created and notification sent!");
     } catch (err) {
@@ -48,13 +48,11 @@ const PropertyList = ({ properties, currentUser }) => {
     }
   };
 
-  // ✅ Only keep notifications for properties owned by currentUser
   const ownerNotifications = notifications.filter((n) => {
     const property = properties.find((p) => p.id === n.property_id);
     return property?.user?.email === currentUser?.email;
   });
 
-  // Category filter
   const filteredProperties = selectedCategory
     ? properties.filter((property) => {
         const propertyCategoryId =
@@ -68,25 +66,49 @@ const PropertyList = ({ properties, currentUser }) => {
   }
 
   return (
-    <div>
+    <div className="property-list">
       <h1>Properties List</h1>
 
-      {/* 🔔 Notification bell */}
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button onClick={() => setShowNotifications(!showNotifications)}>
-          🔔 {ownerNotifications.filter((n) => !n.seen).length}
+      {/* Filter and Bell aligned */}
+      <div className="filter-bell-wrapper">
+        <div className="category-filter">
+          <label htmlFor="category-filter">Filter by Category: </label>
+          <select
+            id="category-filter"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="">All</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          className="notification-bell"
+          onClick={() => setShowNotifications(!showNotifications)}
+        >
+          <FaBell className="bell-icon" />
+          {ownerNotifications.filter((n) => !n.seen).length > 0 && (
+            <span className="notification-count">
+              {ownerNotifications.filter((n) => !n.seen).length}
+            </span>
+          )}
         </button>
       </div>
 
-      {/* Notifications dropdown (no white box) */}
+      {/* Notifications dropdown */}
       {showNotifications && (
-        <div style={{ padding: "0.5rem 0", marginBottom: "1rem" }}>
+        <div className="notifications">
           <h4>Notifications</h4>
           {ownerNotifications.length === 0 ? (
             <p>No notifications</p>
           ) : (
             ownerNotifications.map((n) => (
-              <div key={n.id} style={{ marginBottom: "0.5rem" }}>
+              <div key={n.id}>
                 <span>
                   Notification ID: {n.id} – Request: {n.request_id} – Property:{" "}
                   {n.property_id} – {n.seen ? "Seen" : "Unseen"}
@@ -100,57 +122,37 @@ const PropertyList = ({ properties, currentUser }) => {
         </div>
       )}
 
-      {/* Category filter */}
-      <label htmlFor="category-filter">Filter by Category: </label>
-      <select
-        id="category-filter"
-        value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}
-      >
-        <option value="">All</option>
-        {categories.map((c) => (
-          <option key={c.id} value={c.id}>
-            {c.name}
-          </option>
-        ))}
-      </select>
-
       <hr />
 
-      {filteredProperties.length === 0 ? (
-        <p>No properties in this category.</p>
-      ) : (
-        filteredProperties.map((property, index) => (
-          <div key={property._id || index}>
-            <Link to={`/properties/${property.id}`}>
-              <h2>{property.title}</h2>
-            </Link>
-            {property.images && property.images.length > 0 && (
-              <img
-                src={property.images[0]}
-                alt={property.title}
-                width="200"
-                style={{ display: "block", margin: "10px 0" }}
-              />
-            )}
-            <p>Price: {property.price} BHD</p>
-            <p>Category: {property.category?.name || "Uncategorized"}</p>
-            <p>Rooms: {property.numOfRooms}</p>
-            <p>Bathrooms: {property.numOfBathrooms}</p>
-            <p>Location: {property.location}</p>
-            <p>
-              <small>Owner: {property.user?.username || "Unknown"}</small>
-            </p>
+      {/* Properties Grid */}
+      <div className="property-grid">
+        {filteredProperties.length === 0 ? (
+          <p>No properties in this category.</p>
+        ) : (
+          filteredProperties.map((property, index) => (
+            <div key={property._id || index} className="property-card">
+              <Link to={`/properties/${property.id}`}>
+                <h2>{property.title}</h2>
+              </Link>
+              {property.images && property.images.length > 0 && (
+                <img src={property.images[0]} alt={property.title} />
+              )}
+              <p>Price: {property.price} BHD</p>
+              <p>Category: {property.category?.name || "Uncategorized"}</p>
+              <p>Rooms: {property.numOfRooms}</p>
+              <p>Bathrooms: {property.numOfBathrooms}</p>
+              <p>Location: {property.location}</p>
+              <p>
+                <small>Owner: {property.user?.username || "Unknown"}</small>
+              </p>
 
-            {/* ✅ Hide Buy button if current user is the property owner */}
-            {property.user?.email !== currentUser?.email && (
-              <button onClick={() => handleBuy(property.id)}>Buy</button>
-            )}
-
-            <hr />
-          </div>
-        ))
-      )}
+              {property.user?.email !== currentUser?.email && (
+                <button onClick={() => handleBuy(property.id)}>Buy</button>
+              )}
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };

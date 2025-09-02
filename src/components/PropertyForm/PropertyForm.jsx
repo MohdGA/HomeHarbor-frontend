@@ -4,7 +4,7 @@ import Map, { Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as propertyService from "../../services/propertyService";
 import categoryService from "../../services/categoryService";
-
+import "./PropertyForm.css"; // ✅ import styles
 
 const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
   const { propertyId } = useParams();
@@ -16,14 +16,12 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
     numOfBathrooms: "",
     location: "",
     category_id: "",
-    images: [] // Cloudinary URL
+    images: []
   };
 
   const [formData, setFormData] = useState(initialState);
   const [uploading, setUploading] = useState(false);
-
   const [coordinates, setCoordinates] = useState({ lat: 26.0667, lng: 50.5577 });
-
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
@@ -38,13 +36,12 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
     loadCategories();
   }, []);
 
-
   useEffect(() => {
     const fetchProperty = async () => {
       const data = await propertyService.show(propertyId);
       setFormData(data);
       if (data.location) {
-        const [lat, lng] = data.location.split(',').map(Number);
+        const [lat, lng] = data.location.split(",").map(Number);
         if (!isNaN(lat) && !isNaN(lng)) setCoordinates({ lat, lng });
       }
     };
@@ -53,46 +50,33 @@ const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
 
   const handleChange = (evt) => {
     setFormData({ ...formData, [evt.target.name]: evt.target.value });
-  }
-                
-//   const handleSubmit = (evt) => {
-//     evt.preventDefault();
-//     if (propertyId) {
-//       handleUpdateProperty(formData, propertyId);
-//     } else {
-//       handleAddProperty(formData);
-//     }
-//   };
+  };
 
+  const handleImageChange = async (evt) => {
+    const files = evt.target.files;
+    if (!files.length) return;
 
-const handleImageChange = async (evt) => {
-  const files = evt.target.files;
-  if (!files.length) return;
+    setUploading(true);
+    const formDataFile = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formDataFile.append("files", files[i]);
+    }
 
-  setUploading(true);
-  const formDataFile = new FormData();
-  for (let i = 0; i < files.length; i++) {
-    formDataFile.append("files", files[i]); // must match backend param
-  }
-
-  try {
-    const res = await fetch("http://localhost:8000/upload/", {
-      method: "POST",
-      body: formDataFile
-    });
-    if (!res.ok) throw new Error("Upload failed");
-    const data = await res.json();
-
-    setFormData({ ...formData, images: data.urls });
-  } catch (err) {
-    console.error(err);
-    alert("Image upload failed, try again.");
-  } finally {
-    setUploading(false);
-  }
-};
-
-
+    try {
+      const res = await fetch("http://localhost:8000/upload/", {
+        method: "POST",
+        body: formDataFile
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      setFormData({ ...formData, images: data.urls });
+    } catch (err) {
+      console.error(err);
+      alert("Image upload failed, try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleMapClick = (event) => {
     const { lng, lat } = event.lngLat;
@@ -111,8 +95,10 @@ const handleImageChange = async (evt) => {
   };
 
   return (
-    <main>
-      <form onSubmit={handleSubmit}>
+    <main className="property-form-container">
+      <form className="property-form" onSubmit={handleSubmit}>
+        <h2>{propertyId ? "Update Property" : "Create Property"}</h2>
+
         <label htmlFor="title-input">Title</label>
         <input
           required
@@ -183,8 +169,7 @@ const handleImageChange = async (evt) => {
           readOnly
         />
 
-
-        <div style={{ width: "100%", height: "300px", margin: "10px 0" }}>
+        <div className="map-container">
           <Map
             initialViewState={{
               latitude: coordinates.lat,
@@ -197,30 +182,29 @@ const handleImageChange = async (evt) => {
             onClick={handleMapClick}
           >
             <Marker latitude={coordinates.lat} longitude={coordinates.lng} anchor="bottom">
-  <img
-    src="https://cdn-icons-png.flaticon.com/512/69/69524.png"
-    alt="House"
-    style={{ width: "30px", height: "30px" }}
-  />
-</Marker>
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/69/69524.png"
+                alt="House"
+                style={{ width: "30px", height: "30px" }}
+              />
+            </Marker>
           </Map>
         </div>
 
-<label htmlFor="image-input">Property Images</label>
-<input
-  type="file"
-  name="images"
-  id="image-input"
-  accept="image/*"
-  multiple
-  onChange={handleImageChange}
-/>
+        <label htmlFor="image-input">Property Images</label>
+        <input
+          type="file"
+          name="images"
+          id="image-input"
+          accept="image/*"
+          multiple
+          onChange={handleImageChange}
+        />
 
-{uploading && <p>Uploading images...</p>}
-{formData.images?.map((img, i) => (
-  <img key={i} src={img} alt={`Property ${i}`} width="200" />
-))}
-
+        {uploading && <p>Uploading images...</p>}
+        {formData.images?.map((img, i) => (
+          <img key={i} src={img} alt={`Property ${i}`} width="200" />
+        ))}
 
         <button type="submit">{propertyId ? "Update" : "Create"} Property</button>
       </form>
@@ -229,4 +213,3 @@ const handleImageChange = async (evt) => {
 };
 
 export default PropertyForm;
-

@@ -11,6 +11,7 @@ import PropertyForm from './components/PropertyForm/PropertyForm.jsx'
 import PropertyList from './components/PropertyList/PropertyList.jsx'
 import PropertyDetails from './components/PropertyDetails/PropertyDetails.jsx'
 import Profile from './components/profile/profile.jsx'
+import Home from './components/home/home.jsx'
 
 const App = () => {
     const navigate = useNavigate()
@@ -96,7 +97,7 @@ const App = () => {
           <Route path='/property/:propertyId/edit' element={<PropertyForm selctedProperty ={selctedProperty} handleUpdateProperty={handleUpdateProperty} handleAddProperty={handleAddProperty}/>}/>
 
           <Route path="/profile" element={<Profile user={user}/>}/>
-          <Route path='/' element={<h1>Hello!</h1>} />
+          <Route path='/' element={<Home/>} />
           <Route path='/sign-up' element={<SignUp handleSignUp={handleSignUp} user={user} />} />
           <Route path='/sign-in' element={<SignIn handleSignIn={handleSignIn} user={user} />} />
           <Route path='*' element={<h1>404</h1>} />

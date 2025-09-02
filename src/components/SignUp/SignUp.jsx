@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import "./SignUp.css"
 
 const SignUp = (props) => {
   const navigate = useNavigate()
@@ -8,61 +9,58 @@ const SignUp = (props) => {
     username: '',
     email: "",
     password: '',
+    passwordConf: ''
   }
 
   const [formData, setFormData] = useState(initialState)
   const [error, setError] = useState(null)
 
-
-// useEffect(() => {
-//   if (props.user && !props.justSignedUp) {
-//     navigate('/')
-//   }
-// }, [props.user, props.justSignedUp])
-
-
   const handleChange = (evt) => {
     setFormData({...formData, [evt.target.name]: evt.target.value})
   }
 
-const handleSubmit = async (evt) => {
-  evt.preventDefault()
-  const result = await props.handleSignUp(formData)
-  if (result.success) {
-    navigate('/sign-in')   // ✅ this will now run
-  } else {
-    setError(result.message)
+  const handleSubmit = async (evt) => {
+    evt.preventDefault()
+    const result = await props.handleSignUp(formData)
+    if (result.success) {
+      navigate('/sign-in')  
+    } else {
+      setError(result.message)
+    }
   }
-}
 
-
-  let formIsInvalid = true
-
-  if (formData.username && formData.password && formData.password === formData.passwordConf) {
-    formIsInvalid = false
-  }
+  const formIsInvalid = !(formData.username && formData.password && formData.password === formData.passwordConf)
 
   return (
     <main>
-      <h1>Sign up Form</h1>
-      {/* add error message display to form */}
-      {error}
       <form onSubmit={handleSubmit}>
-        <label>Username:</label>
-        <input type="text" name='username' onChange={handleChange} />
-        <br />
- 
-        <label>Email:</label>
-        <input type="email" name='email' onChange={handleChange} />
-        <br />
+        <div className="form-header">
+          <h1>Sign Up Form</h1>
+        </div>
 
-        <label>Password:</label>
-        <input type="password" name='password' onChange={handleChange} />
-        <br />
-        <label>Confirm Password:</label>
-        <input type="password" name="passwordConf" onChange={handleChange} />
-        <br />
-        <button type="submit" disabled={formIsInvalid}>Sign up</button>
+        {error && <p className="error-message">{error}</p>}
+
+        <div className="input-group">
+          <label>Username:</label>
+          <input type="text" name='username' onChange={handleChange} />
+        </div>
+
+        <div className="input-group">
+          <label>Email:</label>
+          <input type="email" name='email' onChange={handleChange} />
+        </div>
+
+        <div className="input-group">
+          <label>Password:</label>
+          <input type="password" name='password' onChange={handleChange} />
+        </div>
+
+        <div className="input-group">
+          <label>Confirm Password:</label>
+          <input type="password" name="passwordConf" onChange={handleChange} />
+        </div>
+
+        <button type="submit" disabled={formIsInvalid}>Sign Up</button>
       </form>
     </main>
   )

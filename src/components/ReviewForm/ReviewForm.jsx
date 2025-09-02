@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as propertyService from './../../services/propertyService';
+import "./ReviewForm.css"
 
 const ReviewForm = (props) => {
   const [formData, setFormData] = useState({ content: '' });
@@ -31,19 +32,25 @@ console.log(err);
 */
 
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="content-input">Your review:</label>
-      <textarea
-        required
-        name="content"
-        id="content-input"
-        value={formData.content}
-        onChange={handleChange}
-      />
-      <button type="submit">ADD REVIEW</button>
-    </form>
-  );
+return (
+<div className="review-form-wrapper">
+  <form onSubmit={handleSubmit}>
+    <h3 className="review-form-title">Add a Review</h3>
+    <label htmlFor="content-input">Your review:</label>
+    <textarea
+      required
+      name="content"
+      id="content-input"
+      value={formData.content}
+      onChange={handleChange}
+    />
+    <button type="submit">ADD REVIEW</button>
+  </form>
+</div>
+
+);
+
+
 };
 
 export default ReviewForm;

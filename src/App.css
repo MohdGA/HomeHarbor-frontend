@@ -1,4 +1,4 @@
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -39,4 +39,23 @@
 
 .read-the-docs {
   color: #888;
+} */
+
+/* Make the page take full height */
+html, body {
+  height: 100%;
+  margin: 0;
 }
+
+/* Flexbox layout for footer at bottom */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main content grows, pushes footer down */
+main {
+  flex: 1;
+}
+
