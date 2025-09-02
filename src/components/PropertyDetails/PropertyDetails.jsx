@@ -2,22 +2,29 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as propertyService from "../../services/propertyService";
 import ReviewForm from "../ReviewForm/ReviewForm";
+import Map, { Marker } from "react-map-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 const PropertyDetails = (props) => {
   const { propertyId } = useParams();
   const [property, setProperty] = useState();
+  const [coordinates, setCoordinates] = useState({ lat: 26.0667, lng: 50.5577 }); 
 
   useEffect(() => {
     const fetchProperty = async () => {
       const propertyData = await propertyService.show(propertyId);
       setProperty(propertyData);
-      
+
+     
+      if (propertyData.location) {
+        const [lat, lng] = propertyData.location.split(",").map(Number);
+        if (!isNaN(lat) && !isNaN(lng)) setCoordinates({ lat, lng });
+      }
     };
     fetchProperty();
   }, [propertyId]);
 
-
-  const {handleUpdateProperty} = props;
+  const { handleUpdateProperty } = props;
   const isOwner = property?.user?.username === props?.user?.username;
 
   const handleDeleteReview = async (reviewId) => {
@@ -34,10 +41,7 @@ const PropertyDetails = (props) => {
 
   const handleReview = async (reviewData) => {
     try {
-      const newReview = await propertyService.createReviews(
-        reviewData,
-        propertyId
-      );
+      const newReview = await propertyService.createReviews(reviewData, propertyId);
       setProperty((prev) => ({
         ...prev,
         reviews: [...(prev.reviews || []), newReview],
@@ -47,23 +51,10 @@ const PropertyDetails = (props) => {
     }
   };
 
-  //   const handleEditReview = async (reviewId, newData) => {
-  //   try {
-  //     const updatedReview = await propertyService.updateReviews(propertyId, reviewId, newData)
-  //     setProperty(prev => ({
-  //       ...prev,
-  //       reviews: prev.reviews.map(r => r.id === reviewId ? updatedReview : r)
-  //     }))
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
-  console.log(property)
-
-
   if (!property) {
     return <p>Loading property details...</p>;
   }
+
   return (
     <>
       <Link to="/properties">
@@ -76,33 +67,40 @@ const PropertyDetails = (props) => {
       <p>Rooms: {property.numOfRooms}</p>
       <p>Bathrooms: {property.numOfBathrooms}</p>
       <p>Location: {property.location}</p>
-      {property.imageUrl && (
-        <img src={property.imageUrl} alt={property.title} width="300" />
-        )}
+      {property.imageUrl && <img src={property.imageUrl} alt={property.title} width="300" />}
 
+      
+      <div style={{ width: "100%", height: "300px", margin: "10px 0" }}>
+        <Map
+          initialViewState={{
+            latitude: coordinates.lat,
+            longitude: coordinates.lng,
+            zoom: 12
+          }}
+          style={{ width: "100%", height: "100%" }}
+          mapStyle="mapbox://styles/mapbox/streets-v11"
+          mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+        >
+          <Marker latitude={coordinates.lat} longitude={coordinates.lng} color="red" />
+        </Map>
+      </div>
 
-{isOwner ? (
-  <button onClick={() => props.handleDeleteProperty(property.id)}>
-    Delete {property.title}
-  </button>
+      {isOwner && (
+        <>
+          <button onClick={() => props.handleDeleteProperty(property.id)}>
+            Delete {property.title}
+          </button>
 
-  
-) : null}
-
-
-{isOwner ? (
- <Link to={`/property/${propertyId}/edit`}>
-        <button>Edit</button>  
-      </Link>
-
-  
-) : null}
+          <Link to={`/property/${propertyId}/edit`}>
+            <button>Edit</button>
+          </Link>
+        </>
+      )}
 
       <h3>Add a Review</h3>
       <ReviewForm handleReview={handleReview} />
 
       <h3>Reviews</h3>
-
       <ul>
         {property.reviews?.map((r) => (
           <li key={r.id}>
