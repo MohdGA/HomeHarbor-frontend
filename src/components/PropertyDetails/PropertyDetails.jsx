@@ -15,7 +15,7 @@ const PropertyDetails = (props) => {
   const [mainImage, setMainImage] = useState(null);
   const [fade, setFade] = useState(false);
 
-  // Helper function to format text for display
+  
   const formatText = useCallback((text) => {
     if (!text) return '';
     return text;
@@ -42,7 +42,7 @@ const PropertyDetails = (props) => {
     fetchProperty();
   }, [propertyId]);
 
-  // Auto-slide images every 3 seconds
+
   useEffect(() => {
     if (property?.images?.length > 1) {
       const interval = setInterval(() => {
@@ -95,7 +95,7 @@ const PropertyDetails = (props) => {
     window.open(url, "_blank");
   }, [property?.location]);
 
-  // Safety checks for rendering
+
   const safeImages = property?.images || [];
   const safeReviews = property?.reviews || [];
   const displayMainImage = mainImage || safeImages[0];
@@ -109,7 +109,7 @@ const PropertyDetails = (props) => {
       <Link to="/properties" className="back-link">← Back</Link>
       
       <div className="property-container">
-        {/* Left: Images */}
+      
         <div className="image-section">
           {displayMainImage && (
             <img
@@ -133,7 +133,7 @@ const PropertyDetails = (props) => {
             </div>
           )}
 
-          {/* InfoCards row below the main image */}
+         
           <div className="info-cards-row">
             <InfoCard 
               icon={<FaMoneyBillWave />} 
@@ -170,7 +170,7 @@ const PropertyDetails = (props) => {
           </div>
         </div>
 
-        {/* Right: Info Section */}
+      
         <div className="info-section">
           <h1>{property.title}</h1>
           <p><strong>Description:</strong> {property.description || 'No description available.'}</p>
@@ -191,7 +191,7 @@ const PropertyDetails = (props) => {
         </div>
       </div>
 
-      {/* Map */}
+      
       <div className="map-container">
         <Map
           initialViewState={{
@@ -213,7 +213,7 @@ const PropertyDetails = (props) => {
         </Map>
       </div>
 
-      {/* Reviews - Enhanced Section */}
+     
       <div className="review-section">
         <div className="review-header">
           <h3>Reviews & Feedback ({safeReviews.length})</h3>
@@ -275,7 +275,7 @@ const PropertyDetails = (props) => {
   );
 };
 
-// InfoCard Component with enhanced styling for full text display
+
 const InfoCard = React.memo(({ icon, title, value, color, clickable, onClick }) => (
   <div
     className={`info-card ${clickable ? "clickable" : ""}`}

@@ -4,7 +4,7 @@ import Map, { Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as propertyService from "../../services/propertyService";
 import categoryService from "../../services/categoryService";
-import "./PropertyForm.css"; // ✅ import styles
+import "./PropertyForm.css";
 
 const PropertyForm = ({ handleAddProperty, handleUpdateProperty }) => {
   const { propertyId } = useParams();
