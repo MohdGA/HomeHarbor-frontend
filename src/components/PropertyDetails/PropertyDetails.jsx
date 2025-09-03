@@ -244,7 +244,7 @@ const PropertyDetails = (props) => {
                         </div>
                         <div className="reviewer-details">
                           <strong className="reviewer-name">
-                            {r.user?.name || `User ${r.user_id}`}
+                            {r.user?.name || `User`}
                           </strong>
                           <span className="review-date">
                             {r.created_at ? new Date(r.created_at).toLocaleDateString() : 'Recently'}
