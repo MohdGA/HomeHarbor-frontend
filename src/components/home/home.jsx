@@ -8,7 +8,7 @@ const Home = () => {
   const [isVisible, setIsVisible] = useState({});
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
-  // Intersection Observer for scroll animations
+ 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -30,7 +30,6 @@ const Home = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Auto-rotate testimonials
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTestimonial(prev => (prev + 1) % testimonials.length);
@@ -92,7 +91,7 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {/* Hero Section */}
+     
       <section className="hero-section" data-section="hero">
         <div className="hero-overlay"></div>
         <div className="hero-content">
@@ -107,7 +106,7 @@ const Home = () => {
             
             
 
-            {/* CTA Buttons */}
+          
             <div className={`cta-buttons ${isVisible.hero ? 'animate-in delay-3' : ''}`}>
               <Link to="/properties" className="btn-primary">
                 <FaHome className="mr-2" />
@@ -137,7 +136,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+    
       <section className="features-section" data-section="features">
         <div className="container">
           <h2 className={`section-title ${isVisible.features ? 'animate-in' : ''}`}>
@@ -161,7 +160,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
+     
       <section className="stats-section" data-section="stats">
         <div className="container">
           <div className="stats-grid">
@@ -179,7 +178,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+   
       <section className="testimonials-section" data-section="testimonials">
         <div className="container">
           <h2 className={`section-title ${isVisible.testimonials ? 'animate-in' : ''}`}>
@@ -225,7 +224,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+    
       <section className="cta-section" data-section="cta">
         <div className="container">
           <div className={`cta-content ${isVisible.cta ? 'animate-in' : ''}`}>

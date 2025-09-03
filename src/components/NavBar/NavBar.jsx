@@ -7,7 +7,7 @@ const NavBar = ({ user, handleSignOut }) => {
   return (
     <Navbar expand="lg" bg="white" variant="light" sticky="top" className="shadow-sm">
       <Container className="position-relative">
-        {/* Logo */}
+      
         <Navbar.Brand as={Link} to="/" className="fw-bold brand-text">
           HomeHarbor
         </Navbar.Brand>
@@ -17,7 +17,7 @@ const NavBar = ({ user, handleSignOut }) => {
         <Navbar.Collapse id="basic-navbar-nav">
           {user ? (
             <Nav className="w-100 d-flex flex-wrap align-items-center user-nav">
-              {/* Centered links */}
+             
               <div className="center-links d-flex flex-column flex-lg-row justify-content-center w-100">
                 <Nav.Link as={Link} to="/">  <span>Home</span></Nav.Link>
                 <Nav.Link as={Link} to="/properties/new">  <span>Add Listing</span></Nav.Link>
@@ -25,7 +25,7 @@ const NavBar = ({ user, handleSignOut }) => {
                 <Nav.Link as={Link} to="/profile">  <span>Profile</span></Nav.Link>
               </div>
 
-              {/* Sign Out */}
+         
               <Nav.Link
                 as={Link}
                 to="/"
