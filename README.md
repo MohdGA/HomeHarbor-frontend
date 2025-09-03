@@ -9,7 +9,7 @@ Discover the smarter way to invest in real estate with HomeHarbor. Our platform 
 
 ## 🚀 Getting Started
 
-👉 **Test it here:** (WE WILL DEPLOY AND PUSH AGAIN)
+👉 **Test it here:** (https://home-harbor-frontend-six.vercel.app/)
 
 👉 **Planning Materials:**
 - [project1_trello] https://trello.com/b/xwHPlnMP/project-4
