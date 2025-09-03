@@ -108,67 +108,62 @@ a:hover {
 }
 
 /* Enhanced InfoCard styling for full text display */
+.info-cards-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* تلقائي حسب حجم الشاشة */
+  gap: 16px;
+  margin-top: 16px;
+  max-width: 100%;
+}
+
 .info-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 120px;
-  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 12px;
+  min-height: 100px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
   cursor: default;
-  padding: 16px 12px;
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
-  border-left: 5px solid transparent;
-}
-
-.info-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(0,191,166,0.3), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
-}
-
-.info-card:hover::before {
-  transform: translateX(100%);
-}
-
-.info-card.clickable {
-  cursor: pointer;
-  background: linear-gradient(135deg, #fff 0%, #f0fff4 100%);
-}
-
-.info-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-}
-
-.info-card.clickable:hover {
-  background: linear-gradient(135deg, #e8f5e8 0%, #f0fff4 100%);
-  border-left-color: currentColor;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .icon {
   font-size: 28px;
   margin-bottom: 8px;
-  color: #555;
-  flex-shrink: 0;
-  transition: all 0.3s ease;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  color: #000000;
 }
 
-.info-card:hover .icon {
-  transform: scale(1.1);
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+.info-text {
+  text-align: center;
+}
+
+.info-title {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.info-card.clickable {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.info-card.clickable:hover {
+  background-color: #f0f8ff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+  border-color: #00bfa6;
+}
+
+.info-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  word-wrap: break-word;
 }
 
 .info-text {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
 import categoryService from "../../services/categoryService";
 import * as RequestService from "../../services/requestService";
@@ -7,6 +7,7 @@ import * as NotificationService from "../../services/notificationService";
 import "./PropertyList.css";
 
 const PropertyList = ({ properties, currentUser }) => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(""); 
 
@@ -69,7 +70,6 @@ const PropertyList = ({ properties, currentUser }) => {
     <div className="property-list">
       <h1>Properties List</h1>
 
-      {/* Filter and Bell aligned */}
       <div className="filter-bell-wrapper">
         <div className="category-filter">
           <label htmlFor="category-filter">Filter by Category: </label>
@@ -100,7 +100,6 @@ const PropertyList = ({ properties, currentUser }) => {
         </button>
       </div>
 
-      {/* Notifications dropdown */}
       {showNotifications && (
         <div className="notifications">
           <h4>Notifications</h4>
@@ -110,8 +109,7 @@ const PropertyList = ({ properties, currentUser }) => {
             ownerNotifications.map((n) => (
               <div key={n.id}>
                 <span>
-                  Notification ID: {n.id} – Request: {n.request_id} – Property:{" "}
-                  {n.property_id} – {n.seen ? "Seen" : "Unseen"}
+                  Notification ID: {n.id} – Request: {n.request_id} – Property: {n.property_id} – {n.seen ? "Seen" : "Unseen"}
                 </span>
                 {!n.seen && (
                   <button onClick={() => handleMarkSeen(n.id)}>Mark Seen</button>
@@ -124,16 +122,17 @@ const PropertyList = ({ properties, currentUser }) => {
 
       <hr />
 
-      {/* Properties Grid */}
       <div className="property-grid">
         {filteredProperties.length === 0 ? (
           <p>No properties in this category.</p>
         ) : (
           filteredProperties.map((property, index) => (
-            <div key={property._id || index} className="property-card">
-              <Link to={`/properties/${property.id}`}>
-                <h2>{property.title}</h2>
-              </Link>
+            <div
+              key={property._id || index}
+              className="property-card"
+              onClick={() => navigate(`/properties/${property.id}`)}
+            >
+              <h2>{property.title}</h2>
               {property.images && property.images.length > 0 && (
                 <img src={property.images[0]} alt={property.title} />
               )}
@@ -147,7 +146,14 @@ const PropertyList = ({ properties, currentUser }) => {
               </p>
 
               {property.user?.email !== currentUser?.email && (
-                <button onClick={() => handleBuy(property.id)}>Buy</button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); 
+                    handleBuy(property.id);
+                  }}
+                >
+                  Buy
+                </button>
               )}
             </div>
           ))

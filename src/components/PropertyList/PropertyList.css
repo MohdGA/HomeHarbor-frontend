@@ -1,7 +1,11 @@
+/* ===== General Layout ===== */
 .property-list {
   max-width: 1200px;
+  width: 90%;
   margin: 2rem auto;
   padding: 1rem;
+  font-family: 'Inter', 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
 .property-list h1 {
@@ -11,57 +15,63 @@
   color: #00bfa6;
 }
 
-/* ===== Filter + Bell ===== */
+/* ===== Filter + Bell Wrapper ===== */
 .filter-bell-wrapper {
   display: flex;
-  justify-content: space-between; /* keeps filter left, bell right */
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   margin-bottom: 1rem;
-  min-width: 100%; /* ensure it never shrinks */
 }
 
-.category-filter {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+/* Category Filter */
+.category-filter label {
+  margin-right: 0.5rem;
+  font-weight: 500;
+  color: #333;
 }
 
 #category-filter {
   padding: 0.4rem 0.8rem;
-  font-size: 0.95rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
+  border: 2px solid #00bfa6;
+  border-radius: 8px;
   background: #fdfdfd;
-  transition: border 0.3s, box-shadow 0.3s;
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  appearance: none;
+}
+
+#category-filter:hover {
+  border-color: #009e8f;
 }
 
 #category-filter:focus {
-  border-color: #00bfa6;
+  border-color: #009e8f;
   box-shadow: 0 0 0 3px rgba(0, 191, 166, 0.2);
 }
 
+/* Notification Bell */
 .notification-bell {
   position: relative;
   background: #00bfa6;
   color: #fff;
   border: none;
-  padding: 0.4rem 0.6rem;
+  padding: 0.5rem;
   border-radius: 50%;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .notification-bell:hover {
   background: #009e8f;
-}
-
-.bell-icon {
-  font-size: 1.3rem;
+  transform: scale(1.1);
 }
 
 .notification-count {
@@ -69,25 +79,25 @@
   top: -5px;
   right: -5px;
   background: red;
-  color: white;
+  color: #fff;
   font-size: 0.7rem;
   padding: 2px 5px;
   border-radius: 50%;
   font-weight: bold;
 }
 
-/* ===== Notifications Dropdown ===== */
+/* Notifications dropdown */
 .notifications {
   background: #f0fdf4;
   padding: 1rem;
   border-radius: 12px;
-  margin-bottom: 1rem;
   border: 1px solid #c6f6d5;
+  margin-top: 0.5rem;
 }
 
 .notifications h4 {
-  margin-bottom: 0.5rem;
   color: #00bfa6;
+  margin-bottom: 0.5rem;
 }
 
 .notifications div {
@@ -96,18 +106,21 @@
   padding: 0.5rem;
   margin-bottom: 0.5rem;
   border: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 0.9rem;
 }
 
 .notifications button {
-  margin-left: 0.5rem;
   background: #00bfa6;
-  color: white;
+  color: #fff;
   border: none;
   padding: 0.3rem 0.7rem;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.8rem;
+  transition: background 0.3s;
 }
 
 .notifications button:hover {
@@ -117,9 +130,8 @@
 /* ===== Properties Grid ===== */
 .property-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
-  align-items: stretch;
 }
 
 /* ===== Property Card ===== */
@@ -127,24 +139,30 @@
   background: #fff;
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 450px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
 }
 
 .property-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 8px 18px rgba(0,0,0,0.12);
 }
 
 .property-card img {
   width: 100%;
-  height: 220px;
+  max-height: 220px;
   object-fit: cover;
   border-radius: 10px;
   margin-bottom: 0.8rem;
+  transition: transform 0.3s;
+}
+
+.property-card img:hover {
+  transform: scale(1.05);
 }
 
 .property-card h2 {
@@ -167,72 +185,48 @@
 .property-card button {
   margin-top: 0.5rem;
   background: #00bfa6;
-  color: white;
+  color: #fff;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.95rem;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .property-card button:hover {
   background: #009e8f;
+  transform: scale(1.05);
 }
 
-/* ====== Category Filter Wrapper ====== */
-.category-select-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 200px; /* smaller width */
-  margin: 1rem 0;
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .property-card {
+    min-height: 380px;
+  }
 }
 
-/* ====== Category Filter ====== */
-#category-filter {
-  width: 100%;
-  padding: 0.4rem 0.8rem; /* smaller padding */
-  border: 2px solid #00bfa6; /* teal border to match navbar */
-  border-radius: 8px; /* slightly smaller radius */
-  background-color: #fdfdfd; /* light background */
-  font-size: 0.9rem; /* slightly smaller font */
-  font-weight: 500;
-  color: #333;
-  outline: none;
-  appearance: none; /* remove default arrow */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
+@media (max-width: 600px) {
+  .filter-bell-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-/* Hover & focus effects */
-#category-filter:hover {
-  border-color: #009e8f; /* darker teal on hover */
-  box-shadow: 0 2px 6px rgba(0, 191, 166, 0.2);
-}
+  #category-filter {
+    width: 100%;
+  }
 
-#category-filter:focus {
-  border-color: #009e8f;
-  box-shadow: 0 0 0 3px rgba(0, 191, 166, 0.2);
-}
+  .property-card {
+    min-height: 350px;
+  }
 
-/* Custom arrow */
-.category-select-wrapper::after {
-  content: "▾"; /* downward arrow */
-  position: absolute;
-  top: 50%;
-  right: 0.8rem; /* spacing from right */
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: #00bfa6;
-  font-size: 0.9rem; /* match select font size */
-}
+  .property-card img {
+    max-height: 180px;
+  }
 
-/* Notification Bell Wrapper */
-.notification-bell-wrapper {
-  display: flex;
-  justify-content: flex-end; /* align to right */
-  margin-bottom: 1rem;
-  position: relative;
+  .property-card button {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.6rem 0;
+  }
 }
