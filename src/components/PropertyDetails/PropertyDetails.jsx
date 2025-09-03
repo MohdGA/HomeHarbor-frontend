@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+
 import * as propertyService from "../../services/propertyService";
 import ReviewForm from "../ReviewForm/ReviewForm";
 import Map, { Marker } from "react-map-gl";
@@ -48,7 +49,7 @@ const PropertyDetails = (props) => {
         const currentIndex = property.images.indexOf(mainImage);
         const nextIndex = (currentIndex + 1) % property.images.length;
         handleSetMainImage(property.images[nextIndex]);
-      }, 3000);
+      }, 6000);
       
       return () => clearInterval(interval);
     }
@@ -138,25 +139,25 @@ const PropertyDetails = (props) => {
               icon={<FaMoneyBillWave />} 
               title="Price" 
               value={`${property.price} BHD`} 
-              color="#cfa15e" 
+              
             />
             <InfoCard 
               icon={<FaBed />} 
               title="Bedrooms" 
               value={property.numOfRooms || 'N/A'} 
-              color="#8fbcd4" 
+             
             />
             <InfoCard 
               icon={<FaBath />} 
               title="Bathrooms" 
               value={property.numOfBathrooms || 'N/A'} 
-              color="#b28cce" 
+              
             />
             <InfoCard 
               icon={<FaMapMarkerAlt />} 
               title="Address" 
               value={property.location} 
-              color="#e07b91" 
+               
               clickable 
               onClick={openInGoogleMaps}
             />
@@ -164,7 +165,7 @@ const PropertyDetails = (props) => {
               icon={<FaHome />} 
               title="Type" 
               value={property.category?.name || property.category || "Other"} 
-              color="#5aa469" 
+               
             />
           </div>
         </div>
@@ -275,7 +276,7 @@ const PropertyDetails = (props) => {
 };
 
 // InfoCard Component with enhanced styling for full text display
-const InfoCard = ({ icon, title, value, color, clickable, onClick }) => (
+const InfoCard = React.memo(({ icon, title, value, color, clickable, onClick }) => (
   <div
     className={`info-card ${clickable ? "clickable" : ""}`}
     style={{ borderLeft: `5px solid ${color}` }}
@@ -288,6 +289,7 @@ const InfoCard = ({ icon, title, value, color, clickable, onClick }) => (
       <span className="info-value">{value}</span>
     </div>
   </div>
-);
+));
+
 
 export default PropertyDetails;
