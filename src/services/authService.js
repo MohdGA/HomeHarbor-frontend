@@ -1,9 +1,9 @@
 // Remove any trailing slash from BASE_URL
-const BASE_URL = import.meta.env.VITE_BACK_END_SERVER_URL.replace(/\/$/, '')
+const BASE_URL = import.meta.env.VITE_BACK_END_SERVER_URL
 
 const signUp = async (formData) => {
   try {
-    const res = await fetch(`${BASE_URL}/register`, {
+    const res = await fetch(`${BASE_URL}/api/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
@@ -19,7 +19,7 @@ const signUp = async (formData) => {
 
 const signIn = async (formData) => {
   try {
-    const res = await fetch(`${BASE_URL}/login`, {
+    const res = await fetch(`${BASE_URL}/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
