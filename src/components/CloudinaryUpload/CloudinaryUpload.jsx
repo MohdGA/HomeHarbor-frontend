@@ -8,15 +8,19 @@ function ImageUpload() {
   const handleUpload = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("files", file); // ✅ must be "files"
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/upload/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setImageUrl(res.data.url);
+      const res = await axios.post(
+        "https://home-harbor-backend-105746213cdf.herokuapp.com/upload/",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      setImageUrl(res.data.urls[0]); // ✅ FastAPI returns { urls: [ ... ] }
     } catch (err) {
-      console.error(err);
+      console.error("Upload error:", err.response?.data || err.message);
     }
   };
 
