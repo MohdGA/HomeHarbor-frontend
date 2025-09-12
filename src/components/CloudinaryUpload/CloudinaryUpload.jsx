@@ -10,18 +10,20 @@ function ImageUpload() {
     if (!file) return alert("Please select a file");
 
     const formData = new FormData();
-    formData.append("files", file); // must match FastAPI endpoint
+    formData.append("files", file); // Must match FastAPI endpoint
 
     try {
       const res = await axios.post(
         "https://home-harbor-backend-105746213cdf.herokuapp.com/upload/",
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
-      setImageUrl(res.data.urls[0]); // FastAPI returns { urls: [ ... ] }
+      setImageUrl(res.data.urls[0]);
     } catch (err) {
       console.error("Upload error:", err.response?.data || err.message);
-      alert("Upload failed, check backend logs");
+      alert("Upload failed. Check backend logs and Cloudinary config.");
     }
   };
 
